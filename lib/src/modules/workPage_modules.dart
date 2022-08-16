@@ -1,0 +1,16 @@
+import 'package:get/get.dart';
+import 'package:trucks_manager/src/models/work_model.dart';
+import 'package:trucks_manager/src/modules/trucks_modules.dart';
+
+class WorkPageModule extends GetxController {
+  TruckModules _truckModules = TruckModules();
+  WorkModel _workModel = WorkModel();
+
+//number of trucks
+  Future<WorkModel> getCounts() async {
+
+    //var count = await  _truckModules.fetchTrucks().length;
+
+    return   WorkModel.from({'trucksCount': 1, 'ordersCount': 1, 'jobsCount': 1});
+  }
+}
