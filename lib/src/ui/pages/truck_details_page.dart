@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:trucks_manager/src/models/trucks_model.dart';
 import 'package:trucks_manager/src/ui/pages/expenses_page.dart';
 import 'package:trucks_manager/src/ui/pages/orders_details_page.dart';
-import 'package:trucks_manager/src/ui/pages/orders_page.dart';
 import 'package:trucks_manager/src/ui/widgets/expenses_list_tile_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/job_list_tile_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
@@ -11,7 +10,7 @@ import 'package:trucks_manager/src/ui/widgets/truck_widget.dart';
 import '../../models/order_model.dart';
 
 class TruckDetailsPage extends StatefulWidget {
-  TruckDetailsPage(this.trucksModel,{Key? key}) : super(key: key);
+ const TruckDetailsPage(this.trucksModel,{Key? key}) : super(key: key);
   final TrucksModel? trucksModel;
 
   @override

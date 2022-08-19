@@ -78,7 +78,7 @@ class WorkPage extends StatelessWidget {
                 iconData: Icons.people_alt_outlined,
                 onTap: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => CustomersPage()));
+                      .push(MaterialPageRoute(builder: (_) => const CustomersPage()));
                 },
               ),
       

@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/pages/users_list_page.dart';
-
-import '../../models/user_model.dart';
-
 class CustomersPage extends StatelessWidget {
-  CustomersPage({Key? key}) : super(key: key);
-  final UserModule? _userModule = UserModule();
-  bool isCustomer = true;
+ const CustomersPage({Key? key}) : super(key: key);
+ final bool isCustomer = true;
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +16,9 @@ class CustomersPage extends StatelessWidget {
   }
 
 //fetch users
-  //;
-  Stream<List<UserModel>> get _users =>
-      _userModule!.fetchUsersWhere(isCustomer);
+  // //;
+  // Stream<List<UserModel>> get _users =>
+  //     _userModule.fetchUsersWhere(isCustomer);
 
   //  List.generate(20, (index) => UserModel(
   //   role: UserWidgetType.customer,

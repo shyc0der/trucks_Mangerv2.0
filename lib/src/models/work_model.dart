@@ -1,8 +1,8 @@
 class WorkModel {
   WorkModel({int? truckCount, int? orderCount, int? jobCount}) {
-    this.trucksCount = truckCount ?? 0; 
-    this.ordersCount = orderCount ?? 0;
-    this.jobsCount = jobCount ?? 0;
+    trucksCount = truckCount ?? 0; 
+    ordersCount = orderCount ?? 0;
+    jobsCount = jobCount ?? 0;
   }
   int trucksCount = 0;
   int ordersCount = 0;

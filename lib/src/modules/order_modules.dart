@@ -1,9 +1,8 @@
 import 'package:get/get.dart';
 import 'package:trucks_manager/src/models/order_model.dart';
-import 'package:trucks_manager/src/ui/pages/orders_page.dart';
 
 class OrderModules extends GetxController {
-  OrderModel _orderModel = OrderModel();
+ final OrderModel _orderModel = OrderModel();
   RxList<OrderModel> orders = <OrderModel>[].obs;
 
   Stream<List<OrderModel>> fetchOrders() {
@@ -13,6 +12,7 @@ class OrderModules extends GetxController {
       ).toList();
     });
   }
+  
   //FETCH DRIVER PER JOB
   //FETCH VEHICLE PER JOB
 }

@@ -18,9 +18,9 @@ class UserModule extends GetxController {
   Future<void> setCurrentUser(String userId) async {
     final user = await getUserById(userId);
     currentUser.value = user;
-    isSuperUser.value = user.role == UserWidgetType.admin ||
-        user.role == UserWidgetType.manager;
-    isSuperUser.value = user.role == UserWidgetType.customer;
+    isSuperUser.value = user.userRole == UserWidgetType.admin ||
+        user.userRole == UserWidgetType.manager;
+    isSuperUser.value = user.userRole == UserWidgetType.customer;
   }
 
   Stream<List<UserModel>> fetchUsers() {

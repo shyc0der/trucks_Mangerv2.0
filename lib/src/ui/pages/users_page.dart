@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/pages/users_list_page.dart';
 
-import '../../models/user_model.dart';
 
 class UsersPage extends StatelessWidget {
   UsersPage({Key? key}) : super(key: key);
-  final UserModule? _userModule = UserModule();
-  bool isCustomer = false;
+ final bool isCustomer = false;
 
   @override
   Widget build(BuildContext context) {

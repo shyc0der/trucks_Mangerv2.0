@@ -6,7 +6,7 @@ import 'package:trucks_manager/src/ui/widgets/item_card_widget.dart';
 
 class TrucksListPage extends StatelessWidget {
  TrucksListPage({Key? key}) : super(key: key);
-  final TruckModules? _truckModules = TruckModules();
+  final TruckModules _truckModules = TruckModules();
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class TrucksListPage extends StatelessWidget {
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: StreamBuilder<List<TrucksModel?>>(
-            stream: _truckModules!.fetchTrucks(),
+            stream: _truckModules.fetchTrucks(),
             builder: (context, snapshot) {
               var trucks=snapshot.data ?? [];
               return Wrap(

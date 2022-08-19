@@ -7,7 +7,7 @@ import '../../models/user_model.dart';
 class UsersListPage extends StatelessWidget {
   UsersListPage(this.isCustomer,{Key? key,}) : super(key: key);
   //final Stream<List<UserModel?>> users;
-  final UserModule? _userModule = UserModule();
+  final UserModule _userModule = UserModule();
   bool isCustomer = false;
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class UsersListPage extends StatelessWidget {
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: StreamBuilder<List<UserModel?>>(
-            stream: _userModule!.fetchUsersWhere(isCustomer),
+            stream: _userModule.fetchUsersWhere(isCustomer),
             builder: (context, snapshot) {
               var user = snapshot.data ?? [];
               user.sort(

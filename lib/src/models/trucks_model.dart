@@ -10,8 +10,8 @@ class TrucksModel extends Model {
     bool? active,
     bool? deleted,
   }) : super('trucks') {
-    this.isActive = active ?? true;
-    this.isDeleted = deleted ?? false;
+    isActive = active ?? true;
+    isDeleted = deleted ?? false;
   }
   String? vehicleRegNo;
   String? tankCapity;

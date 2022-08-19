@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
 import 'package:trucks_manager/src/ui/pages/orders_details_page.dart';
@@ -19,7 +17,7 @@ class _OrdersPageState extends State<OrdersPage> {
   late Stream<List<OrderModel>> orders;
  late List<OrderModel> displayOrders = [];
   late List<OrderModel> displayOrder;
-  final OrderModules? _orderModules = OrderModules();
+  final OrderModules _orderModules = OrderModules();
 
   void _changeView(int val) {
     switch (val) {
@@ -56,7 +54,7 @@ class _OrdersPageState extends State<OrdersPage> {
   @override
   void initState() {
     super.initState();
-    orders = _orderModules!.fetchOrders();
+    orders = _orderModules.fetchOrders();
     orders.forEach((element) {
       setState(() {        
       displayOrder = element;
