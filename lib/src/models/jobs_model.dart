@@ -1,12 +1,12 @@
 import 'package:trucks_manager/src/models/model.dart';
 import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
 
-class JobModel2 extends Model{
+class JobModel extends Model{
 
-  JobModel2({this.createdBy,this.customerId,this.vehicleId,this.orderNo,this.orderId,this.driverId,
-  OrderWidgateState? jobState2,this.state,this.dateClosed,DateTime? dateCreated,this.lpoNumber
+  JobModel({this.createdBy,this.customerId,this.vehicleId,this.orderNo,this.orderId,this.driverId,
+  OrderWidgateState? jobState,this.state,this.dateClosed,DateTime? dateCreated,this.lpoNumber
   }):super("jobsCreated"){
-  state= jobState2?.value  ?? 'Open';
+  state= jobState?.value  ?? 'Open';
   this.dateCreated = dateCreated ?? DateTime.now();
 }
   String? id;
@@ -20,8 +20,8 @@ class JobModel2 extends Model{
   String? state;
   DateTime dateCreated =DateTime.now();
   DateTime? dateClosed;
-  OrderWidgateState get jobState2 => orderWidgateState(state ?? '');
-  JobModel2.fromMap(Map map):super("jobsCreated"){
+  OrderWidgateState get jobStates => orderWidgateState(state ?? '');
+  JobModel.fromMap(Map map):super("jobsCreated"){
     id=map['id'];
     createdBy=map['createdBy'];
     customerId=map['customerId'];

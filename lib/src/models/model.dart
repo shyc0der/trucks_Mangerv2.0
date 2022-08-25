@@ -10,15 +10,15 @@ class Model {
   static Future<void> initiateDbs() async {
     try {
       await Firebase.initializeApp(
-           options: const FirebaseOptions(
-          apiKey: 'AIzaSyDwn4T6UwLMqLLD5w7jARWVJabiS7DyAmY', 
-          appId: '1:834602052606:web:0852fa8eedae2746682eaf', 
-          messagingSenderId: '834602052606', 
-          projectId: 'trucks-c05a8',
-          databaseURL: "https://trucks-c05a8.firebaseio.com",
-          storageBucket: "trucks-c05a8.appspot.com",
-          measurementId: "G-6CQQ394FHP",
-            )      );
+          options: const FirebaseOptions(
+        apiKey: 'AIzaSyDwn4T6UwLMqLLD5w7jARWVJabiS7DyAmY',
+        appId: '1:834602052606:web:0852fa8eedae2746682eaf',
+        messagingSenderId: '834602052606',
+        projectId: 'trucks-c05a8',
+        databaseURL: "https://trucks-c05a8.firebaseio.com",
+        storageBucket: "trucks-c05a8.appspot.com",
+        measurementId: "G-6CQQ394FHP",
+      ));
     } catch (e) {
       print(e);
     }
@@ -45,88 +45,24 @@ class Model {
     return (await firestore.collection(collectionName).doc(id).get());
   }
 
+  Stream<DocumentSnapshot<Map<String, dynamic>>> fetchStreamsDataById(String id) {
+    
+    return firestore.collection(collectionName).doc(id).snapshots();
+  }
+
   Stream<QuerySnapshot> fetchStreamsData({String? orderBy}) {
-     final ref =firestore.collection(collectionName);
-    var ref2; 
-    if(orderBy != null){
-      ref2 = ref.orderBy(orderBy, descending: true);
-    }else{
-      ref2 = ref;
-    }
-    return ref2.snapshots();  }
-
- Future<List<QueryDocumentSnapshot<Map<String,dynamic>>>> fetchWhereData(String field,{
-  Object? isEqualTo,
-    Object? isNotEqualTo,
-    Object? isLessThan,
-    Object? isLessThanOrEqualTo,
-    Object? isGreaterThan,
-    Object? isGreaterThanOrEqualTo,
-    Object? arrayContains,
-    List<Object?>? arrayContainsAny,
-    List<Object?>? whereIn,
-    List<Object?>? whereNotIn,
-    bool? isNull,
-    String? orderBy,
- })async{
-   final ref =firestore.collection(collectionName);
+    final ref = firestore.collection(collectionName);
     var ref2;
-    if(orderBy != null){
+    if (orderBy != null) {
       ref2 = ref.orderBy(orderBy, descending: true);
-    }else{
+    } else {
       ref2 = ref;
     }
-return (await ref2.where(field,
-      isEqualTo: isEqualTo,
-      isNotEqualTo: isNotEqualTo,
-      isLessThan: isLessThan,
-      isLessThanOrEqualTo: isLessThanOrEqualTo,
-      isGreaterThan: isGreaterThan,
-      isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
-      arrayContains: arrayContains,
-      arrayContainsAny: arrayContainsAny,
-      whereIn: whereIn,
-      whereNotIn: whereNotIn,
-      isNull: isNull,
-).get()).docs;}
+    return ref2.snapshots();
+  }
 
- 
-
-Future<QueryDocumentSnapshot<Map<String,dynamic>>> fetchWhereModelData(String field,{
-  Object? isEqualTo,
-    Object? isNotEqualTo,
-    Object? isLessThan,
-    Object? isLessThanOrEqualTo,
-    Object? isGreaterThan,
-    Object? isGreaterThanOrEqualTo,
-    Object? arrayContains,
-    List<Object?>? arrayContainsAny,
-    List<Object?>? whereIn,
-    List<Object?>? whereNotIn,
-    bool? isNull,
-    String? orderBy,
- })async{
-   final ref =firestore.collection(collectionName);
-    var ref2;
-    if(orderBy != null){
-      ref2 = ref.orderBy(orderBy, descending: true);
-    }else{
-      ref2 = ref;
-    }
-return (await ref2.where(field,
-      isEqualTo: isEqualTo,
-      isNotEqualTo: isNotEqualTo,
-      isLessThan: isLessThan,
-      isLessThanOrEqualTo: isLessThanOrEqualTo,
-      isGreaterThan: isGreaterThan,
-      isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
-      arrayContains: arrayContains,
-      arrayContainsAny: arrayContainsAny,
-      whereIn: whereIn,
-      whereNotIn: whereNotIn,
-      isNull: isNull,
-).get()).docs;}
-  Stream<QuerySnapshot> fetchStreamsDataWhere(String field, {
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> fetchWhereData(
+    String field, {
     Object? isEqualTo,
     Object? isNotEqualTo,
     Object? isLessThan,
@@ -138,33 +74,114 @@ return (await ref2.where(field,
     List<Object?>? whereIn,
     List<Object?>? whereNotIn,
     bool? isNull,
-    String ? orderBy,
-  }){
-    final ref =firestore.collection(collectionName);
+    String? orderBy,
+  }) async {
+    final ref = firestore.collection(collectionName);
     var ref2;
-    if(orderBy != null){
+    if (orderBy != null) {
       ref2 = ref.orderBy(orderBy, descending: true);
-    }else{
+    } else {
       ref2 = ref;
     }
-    return ref2.where(field,
-      isEqualTo: isEqualTo,
-      isNotEqualTo: isNotEqualTo,
-      isLessThan: isLessThan,
-      isLessThanOrEqualTo: isLessThanOrEqualTo,
-      isGreaterThan: isGreaterThan,
-      isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
-      arrayContains: arrayContains,
-      arrayContainsAny: arrayContainsAny,
-      whereIn: whereIn,
-      whereNotIn: whereNotIn,
-      isNull: isNull,
-    ).snapshots();
+    return (await ref2
+            .where(
+              field,
+              isEqualTo: isEqualTo,
+              isNotEqualTo: isNotEqualTo,
+              isLessThan: isLessThan,
+              isLessThanOrEqualTo: isLessThanOrEqualTo,
+              isGreaterThan: isGreaterThan,
+              isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
+              arrayContains: arrayContains,
+              arrayContainsAny: arrayContainsAny,
+              whereIn: whereIn,
+              whereNotIn: whereNotIn,
+              isNull: isNull,
+            )
+            .get())
+        .docs;
   }
 
+  Future<QueryDocumentSnapshot<Map<String, dynamic>>> fetchWhereModelData(
+    String field, {
+    Object? isEqualTo,
+    Object? isNotEqualTo,
+    Object? isLessThan,
+    Object? isLessThanOrEqualTo,
+    Object? isGreaterThan,
+    Object? isGreaterThanOrEqualTo,
+    Object? arrayContains,
+    List<Object?>? arrayContainsAny,
+    List<Object?>? whereIn,
+    List<Object?>? whereNotIn,
+    bool? isNull,
+    String? orderBy,
+  }) async {
+    final ref = firestore.collection(collectionName);
+    var ref2;
+    if (orderBy != null) {
+      ref2 = ref.orderBy(orderBy, descending: true);
+    } else {
+      ref2 = ref;
+    }
+    return (await ref2
+            .where(
+              field,
+              isEqualTo: isEqualTo,
+              isNotEqualTo: isNotEqualTo,
+              isLessThan: isLessThan,
+              isLessThanOrEqualTo: isLessThanOrEqualTo,
+              isGreaterThan: isGreaterThan,
+              isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
+              arrayContains: arrayContains,
+              arrayContainsAny: arrayContainsAny,
+              whereIn: whereIn,
+              whereNotIn: whereNotIn,
+              isNull: isNull,
+            )
+            .get())
+        .docs;
+  }
 
-
- 
+  Stream<QuerySnapshot> fetchStreamsDataWhere(
+    String field, {
+    Object? isEqualTo,
+    Object? isNotEqualTo,
+    Object? isLessThan,
+    Object? isLessThanOrEqualTo,
+    Object? isGreaterThan,
+    Object? isGreaterThanOrEqualTo,
+    Object? arrayContains,
+    List<Object?>? arrayContainsAny,
+    List<Object?>? whereIn,
+    List<Object?>? whereNotIn,
+    bool? isNull,
+    String? orderBy,
+  }) {
+    final ref = firestore.collection(collectionName);
+    var ref2;
+    if (orderBy != null) {
+      ref2 = ref.orderBy(orderBy, descending: true);
+    } else {
+      ref2 = ref;
+    }
+    return ref2
+        .where(
+          field,
+          isEqualTo: isEqualTo,
+          isNotEqualTo: isNotEqualTo,
+          isLessThan: isLessThan,
+          isLessThanOrEqualTo: isLessThanOrEqualTo,
+          isGreaterThan: isGreaterThan,
+          isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
+          arrayContains: arrayContains,
+          arrayContainsAny: arrayContainsAny,
+          whereIn: whereIn,
+          whereNotIn: whereNotIn,
+          isNull: isNull,
+        )
+        .snapshots();
+  }
 }
 // options: FirebaseOptions(
 //          apiKey: "AIzaSyDwn4T6UwLMqLLD5w7jARWVJabiS7DyAmY",

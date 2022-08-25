@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:trucks_manager/src/models/jobs_model.dart';
 import 'package:trucks_manager/src/models/trucks_model.dart';
+import 'package:trucks_manager/src/modules/job_module.dart';
 import 'package:trucks_manager/src/ui/pages/expenses_page.dart';
+import 'package:trucks_manager/src/ui/pages/jobs_details_page.dart';
 import 'package:trucks_manager/src/ui/pages/orders_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/expenses_list_tile_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/job_list_tile_widget.dart';
@@ -10,7 +13,7 @@ import 'package:trucks_manager/src/ui/widgets/truck_widget.dart';
 import '../../models/order_model.dart';
 
 class TruckDetailsPage extends StatefulWidget {
- const TruckDetailsPage(this.trucksModel,{Key? key}) : super(key: key);
+  const TruckDetailsPage(this.trucksModel, {Key? key}) : super(key: key);
   final TrucksModel? trucksModel;
 
   @override
@@ -46,8 +49,8 @@ class _TruckDetailsPageState extends State<TruckDetailsPage>
       body: Column(
         children: [
           // truck info
-           TruckWidget(
-            registration: widget.trucksModel!.vehicleRegNo ?? '' ,
+          TruckWidget(
+            registration: widget.trucksModel!.vehicleRegNo ?? '',
             //TO:DO CALCULATE AMOUNTS PER VEHICLE
             jobsAmount: 'Ksh. 120,000',
             expensesAmount: 'Ksh. 50,000',
@@ -70,7 +73,10 @@ class _TruckDetailsPageState extends State<TruckDetailsPage>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [_ListOfJobs(), _ListOfExpenses()],
+              children: [
+                _ListOfJobs(widget.trucksModel?.id),
+                _ListOfExpenses()
+              ],
             ),
           )
         ],
@@ -80,32 +86,47 @@ class _TruckDetailsPageState extends State<TruckDetailsPage>
 }
 
 class _ListOfJobs extends StatelessWidget {
-  _ListOfJobs({Key? key}) : super(key: key);
+  _ListOfJobs(this.jobId, {Key? key}) : super(key: key);
+  String? jobId;
 
   final List<OrderModel> _orders = List.generate(13, (index) {
     final List<OrderWidgateState> states = List.from(OrderWidgateState.values);
     states.shuffle();
-    return OrderModel(
-        );
+    return OrderModel();
   });
 
+  final JobModule _jobModule = JobModule();
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _orders.length,
-      itemBuilder: (_, index) {
-        return JobListTile(
-          title: _orders[index].title ?? '',
-          dateTime: _orders[index].dateCreated,
-          amount: _orders[index].amount ?? 0,
-          jobState: _orders[index].orderStates,
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => OrderDetailPage(_orders[index])));
-          },
-        );
-      },
-    );
+    return FutureBuilder<List<JobModel>>(
+        future: _jobModule.fetchJobsByTruck(jobId!),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error ${snapshot.error}'),
+            );
+          }
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: (snapshot.data ?? []).length ,
+              itemBuilder: (_, index) {
+                return JobListTile(
+                  title: snapshot.data![index].lpoNumber ?? '',
+                  dateTime:snapshot.data![index].dateCreated,
+                  amount: _orders[index].amount ?? 0,
+                  jobState: snapshot.data![index].jobStates,
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => JobDetailPage(snapshot.data![index])));
+                  },
+                );
+              },
+            );
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 }
 

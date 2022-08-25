@@ -2,17 +2,40 @@ import 'package:get/get.dart';
 import 'package:trucks_manager/src/models/order_model.dart';
 
 class OrderModules extends GetxController {
- final OrderModel _orderModel = OrderModel();
+  final OrderModel _orderModel = OrderModel();
   RxList<OrderModel> orders = <OrderModel>[].obs;
 
   Stream<List<OrderModel>> fetchOrders() {
     return _orderModel.fetchStreamsData().map<List<OrderModel>>((streams) {
-      return streams.docs.map<OrderModel>((doc) =>
-        OrderModel.from({'id': doc.id,...doc.data() as Map})
-      ).toList();
+      return streams.docs
+          .map<OrderModel>(
+              (doc) => OrderModel.from({'id': doc.id, ...doc.data() as Map}))
+          .toList();
     });
   }
+
+  //FETCH ORDER BY ID
+  Stream<OrderModel> fetchOrderById(String orderId) {
+    return _orderModel
+        .fetchStreamsDataById(orderId)
+        .map((doc) => OrderModel.from({'id': doc.id, ...doc.data() as Map}));
+  }
+
+  Future<OrderModel> fetchFutureOrderById(String orderId) async {
+    var orders = await _orderModel.fetchDataById(orderId);
+
+    return OrderModel.from({'id': orders.id, ...orders.data() as Map});
+  }
   
+  OrderModel? getOrderByJobId(String? _orderId) {
+    
+    final _orders = orders.where((order) => order.id == _orderId).toList();
+
+    if (_orders.isNotEmpty) {
+      return _orders.first;
+    }
+  }
+
   //FETCH DRIVER PER JOB
   //FETCH VEHICLE PER JOB
 }

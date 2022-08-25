@@ -44,7 +44,9 @@ class UserModule extends GetxController {
             .toList();
       });
     }
-    return userModel.fetchStreamsDataWhere('role', isNotEqualTo: 'customer').map<List<UserModel>>((streams) {
+    return userModel
+        .fetchStreamsDataWhere('role', isNotEqualTo: 'customer')
+        .map<List<UserModel>>((streams) {
       return streams.docs
           .map<UserModel>(
               (doc) => UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
@@ -60,5 +62,12 @@ class UserModule extends GetxController {
         .toList();
 
     return useList;
+  }
+
+//fetch user by truck
+
+  Future<UserModel> fetchTruckByUser(String driverId) async {
+    var user = await userModel.fetchDataById(driverId);
+    return UserModel.fromMap({'id':user.id,...user.data() as Map});
   }
 }

@@ -7,6 +7,7 @@ import 'package:trucks_manager/src/ui/pages/trucks_list_page.dart';
 import 'package:trucks_manager/src/ui/widgets/item_card_widget.dart';
 
 import '../../models/work_model.dart';
+import 'jobs_page.dart';
 
 class WorkPage extends StatelessWidget {
   WorkPage({Key? key}) : super(key: key);
@@ -43,7 +44,7 @@ class WorkPage extends StatelessWidget {
                 count: 2,
                 onTap: () {
                   Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => const OrdersPage()));
+                      .push(MaterialPageRoute(builder: (_) => const JobsPage()));
                 },
               ),
       
