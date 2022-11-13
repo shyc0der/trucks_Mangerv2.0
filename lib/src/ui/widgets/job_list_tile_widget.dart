@@ -27,7 +27,14 @@ class JobListTile extends StatelessWidget {
         ),
         title: Text(title),
         subtitle: Text(dateTime.toString().substring(0, 16)),
-        trailing: Text('Ksh. ${amount.ceilToDouble()}'),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+          Text('Ksh. ${amount.ceilToDouble()}'),
+
+          Text(jobState.value,style: TextStyle(color: jobState.color,fontWeight: FontWeight.bold,fontSize: 14.5),)
+          
+          ]),
       ),
     );
   }

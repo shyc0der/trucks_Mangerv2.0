@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -20,10 +22,15 @@ class Model {
         measurementId: "G-6CQQ394FHP",
       ));
     } catch (e) {
+      // ignore: avoid_print
       print(e);
     }
   }
-
+Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> map)async{
+    // DocumentReference _dr = 
+    return await firestore.collection(collectionName).add(map);
+  }
+  
   Future<void> saveOnlineWithId(String id, Map<String, dynamic> map) async {
     await firestore.collection(collectionName).doc(id).set(map);
   }

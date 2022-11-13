@@ -27,7 +27,13 @@ class ExpensesListTile extends StatelessWidget {
             Text(dateTime.toString().substring(0, 16))
           ],
         ),
-        trailing: Text('Ksh. $amount'),
+        trailing: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+          Text(expenseState.value,style: TextStyle(color: expenseState.color,fontWeight: FontWeight.bold,fontSize: 14.5), ),
+          const SizedBox(height:15),
+          Text('Ksh. $amount'),
+        ]),
       ),
     );
   }

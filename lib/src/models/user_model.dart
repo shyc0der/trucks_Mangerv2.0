@@ -4,7 +4,12 @@ import '../ui/widgets/user_widget.dart';
 
 class UserModel extends Model {
   UserModel(
-      {this.firstName,
+
+     {
+      this.id,
+      this.firstName,
+      this.address,
+      this.receiptPath,
       this.lastName,
       this.phoneNo,
       this.idNumber,
@@ -22,12 +27,15 @@ class UserModel extends Model {
 
   UserWidgetType get userRole => userRoleFromString(role ?? ''); 
 
+  String? id;
   String? firstName;
   String? lastName;
   String? email;
   String? phoneNo;
   String? idNumber;
   String? role;
+  String? address;
+  String? receiptPath;
   void Function()? onTap;
   void Function()? onLongPress;
 
@@ -35,11 +43,14 @@ class UserModel extends Model {
   bool isDeleted = false;
 
   UserModel.fromMap(Map map) : super('users') {
+    id = map['id'];
     firstName = map['firstName'];
     lastName = map['lastName'];
+    address = map['address'];
     email = map['email'];
     phoneNo = map['phoneNo'];
     idNumber = map['idNumber'];
+    receiptPath = map['receiptPath'];
     role = map['role'];
     isActive = map['isActive'] ?? true;
     isDeleted = map['isDeleted'] ?? false;
@@ -51,6 +62,8 @@ class UserModel extends Model {
     return {
       'firstName': firstName,
       'lastName': lastName,
+      'address': address,
+      'receiptPath': receiptPath,
       'phoneNo': phoneNo,
       'email': email,
       'role': role,

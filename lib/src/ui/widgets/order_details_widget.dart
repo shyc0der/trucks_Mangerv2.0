@@ -1,25 +1,33 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
-
-class OrderDetialWidget extends StatelessWidget {
-  const OrderDetialWidget(
+class OrderDetailWidget extends StatefulWidget{
+   const OrderDetailWidget(
       {required this.title,
       required this.amount,
       required this.date,
       required this.orderState,
-      this.onApprove,
+      this.update,
       this.onCancel,
       this.onClose,
+      this.goToJob,
       Key? key})
       : super(key: key);
-  final String title;
+       final String title;
   final String amount;
   final String date;
   final OrderWidgateState orderState;
   final void Function()? onCancel;
   final void Function()? onClose;
-  final void Function()? onApprove;
+  final void Function()? update;
+  final void Function()? goToJob;
+   @override
+OrderDetailWidgetState createState() => OrderDetailWidgetState();
+}
+
+class OrderDetailWidgetState extends State<OrderDetailWidget> {
+ 
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +50,7 @@ class OrderDetialWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            widget.title,
             style: Theme.of(context)
                 .textTheme
                 .headline6
@@ -51,7 +59,7 @@ class OrderDetialWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(
-              amount,
+              widget.amount,
               style: Theme.of(context)
                   .textTheme
                   .titleLarge
@@ -59,7 +67,7 @@ class OrderDetialWidget extends StatelessWidget {
             ),
           ),
           Text(
-            date,
+            widget.date,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(
@@ -68,24 +76,24 @@ class OrderDetialWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              if (orderState == OrderWidgateState.Pending ||
-                  orderState == OrderWidgateState.Open)
+              if (widget.orderState == OrderWidgateState.Pending ||
+                  widget.orderState == OrderWidgateState.Open)
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: Colors.redAccent),
-                    onPressed: onCancel,
+                    onPressed: widget.onCancel,
                     child: const Text('Cancel')),
-              if (orderState == OrderWidgateState.Pending ||
-                  orderState == OrderWidgateState.Open)
+              if (widget.orderState == OrderWidgateState.Pending ||
+                  widget.orderState == OrderWidgateState.Open)
                 ElevatedButton(
                     // style: ElevatedButton.styleFrom(primary: Colors.redAccent),
-                    onPressed: orderState == OrderWidgateState.Pending
-                        ? onApprove
-                        : onClose,
-                    child: Text(orderState == OrderWidgateState.Pending
-                        ? 'Approve'
-                        : 'Close')),
-              if (orderState == OrderWidgateState.Closed)
-                const ElevatedButton(onPressed: null, child: Text('Closed')),
+                    onPressed: widget.orderState == OrderWidgateState.Pending
+                        ? widget.update
+                        : widget.goToJob,
+                    child: Text(widget.orderState == OrderWidgateState.Pending
+                        ? 'Update'
+                        : 'Go To Respective Job')),
+              if (widget.orderState == OrderWidgateState.Closed || widget.orderState == OrderWidgateState.Approved)
+               ElevatedButton(onPressed: widget.goToJob, child: const Text('Go To Respective Job')),
             ],
           )
         ],
@@ -94,7 +102,7 @@ class OrderDetialWidget extends StatelessWidget {
   }
 }
 
-enum OrderWidgateState { Pending, Open, Closed, Rejected, Approved }
+enum OrderWidgateState { Pending, Open, Closed, Rejected, Approved,Declined }
 
 extension OrderWidgateStateExt on OrderWidgateState {
   Color get color {
@@ -106,6 +114,8 @@ extension OrderWidgateStateExt on OrderWidgateState {
       case OrderWidgateState.Approved:
         return Colors.green;
       case OrderWidgateState.Rejected:
+        return Colors.red;
+        case OrderWidgateState.Declined:
         return Colors.red;
       default:
         return Colors.grey;
@@ -119,7 +129,9 @@ extension OrderWidgateStateExt on OrderWidgateState {
       case OrderWidgateState.Closed:
         return 'Closed';
       case OrderWidgateState.Rejected:
-        return 'Rejected';
+        return 'Rejected';  
+     case OrderWidgateState.Declined:
+        return 'Declined';
       case OrderWidgateState.Approved:
         return 'Approved';
       default:
@@ -134,6 +146,8 @@ OrderWidgateState orderWidgateState(String val) {
       return OrderWidgateState.Open;
     case 'Rejected':
       return OrderWidgateState.Rejected;
+  case 'Declined':
+      return OrderWidgateState.Declined;
     case 'Closed':
       return OrderWidgateState.Closed;
     case 'Approved':

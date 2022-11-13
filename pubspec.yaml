@@ -36,9 +36,14 @@ dependencies:
   cupertino_icons: ^1.0.2
   fl_chart: ^0.55.0
   firebase_core: ^1.20.0
-  firebase_storage: ^10.3.3
+  firebase_storage: ^10.3.3  
+  firebase_auth: ^3.8.0
   cloud_firestore: ^3.4.0
   firebase_database: ^9.0.20
+  image_picker: ^0.8.2
+  pdf_reports_generator:
+    path: D:\Flutter\pdf_reports_generator
+  printing: ^5.7.2
   get: ^4.6.5
 
 dev_dependencies:
@@ -62,6 +67,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/images/LOGO.JPG
 
   # To add assets to your application, add an assets section, like this:
   # assets:

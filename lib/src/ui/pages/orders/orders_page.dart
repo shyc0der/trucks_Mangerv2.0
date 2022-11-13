@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
-import 'package:trucks_manager/src/ui/pages/orders_details_page.dart';
+import 'package:trucks_manager/src/modules/user_modules.dart';
+import 'package:trucks_manager/src/ui/pages/orders/orders_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/job_list_tile_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
 
-import '../../models/order_model.dart';
+import '../../../models/order_model.dart';
+import 'add_order_widget.dart';
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({Key? key}) : super(key: key);
@@ -15,9 +18,10 @@ class OrdersPage extends StatefulWidget {
 
 class _OrdersPageState extends State<OrdersPage> {
   late Stream<List<OrderModel>> orders;
- late List<OrderModel> displayOrders = [];
+  late List<OrderModel> displayOrders = [];
   late List<OrderModel> displayOrder;
   final OrderModules _orderModules = OrderModules();
+  final UserModule _userModule = Get.find<UserModule>();
 
   void _changeView(int val) {
     switch (val) {
@@ -25,18 +29,25 @@ class _OrdersPageState extends State<OrdersPage> {
         setState(() {
           displayOrders = displayOrder
               .where(
-                  (element) => element.orderStates == OrderWidgateState.Pending)
+                  (element) => element.orderStates == OrderWidgateState.Approved)
               .toList();
         });
         break;
       case 2:
         setState(() {
           displayOrders = displayOrder
-              .where((element) => element.orderStates == OrderWidgateState.Open)
+              .where((element) => element.orderStates == OrderWidgateState.Pending)
               .toList();
         });
         break;
       case 3:
+        setState(() {
+          displayOrders = displayOrder
+              .where((element) => element.orderStates == OrderWidgateState.Open)
+              .toList();
+        });
+        break;
+      case 4:
         setState(() {
           displayOrders = displayOrder
               .where(
@@ -54,16 +65,13 @@ class _OrdersPageState extends State<OrdersPage> {
   @override
   void initState() {
     super.initState();
-    orders = _orderModules.fetchOrders();
+    orders = _orderModules.fetchOrders(_userModule.currentUser.value);
     orders.forEach((element) {
-      setState(() {        
-      displayOrder = element;
-         displayOrders = displayOrder;
+      setState(() {
+        displayOrder = element;
+        displayOrders = displayOrder;
       });
-      
-     });
-
- 
+    });
   }
 
   @override
@@ -73,6 +81,18 @@ class _OrdersPageState extends State<OrdersPage> {
         builder: (context, snapshot) {
       //displayOrders = snapshot.data ?? [];
       return Scaffold(
+        floatingActionButton: CircleAvatar(
+            backgroundColor: Colors.green,
+            radius: 30,
+            child: IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddOrderWidget()));
+              },
+              icon: const Icon(Icons.add),
+            )),
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Orders'),
@@ -102,7 +122,9 @@ class _OrdersPageState extends State<OrdersPage> {
           items: const [
             BottomNavigationBarItem(
                 icon: Icon(Icons.list_outlined), label: 'All'),
-            BottomNavigationBarItem(
+           BottomNavigationBarItem(
+                icon: Icon(Icons.pending_outlined), label: 'Approved'),           
+          BottomNavigationBarItem(
                 icon: Icon(Icons.pending_outlined), label: 'Pending'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.outbox_outlined), label: 'Open'),

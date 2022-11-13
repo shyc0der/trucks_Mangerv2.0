@@ -2,10 +2,11 @@
 import 'package:flutter/material.dart';
 
 class TruckWidget extends StatelessWidget {
-  const TruckWidget({required this.registration, required this.jobsAmount, required this.expensesAmount, Key? key}) : super(key: key);
+  const TruckWidget({required this.registration, required this.jobsAmount, required this.expensesAmount, this.addExpense, Key? key}) : super(key: key);
   final String registration;
-  final String jobsAmount;
+  final double jobsAmount;
   final String expensesAmount;
+ final void Function()? addExpense;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,8 @@ class TruckWidget extends StatelessWidget {
         ]          
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
         children: [
           // icon & registration
           Column(
@@ -45,10 +47,22 @@ class TruckWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+           
               Text('Jobs Ksh. $jobsAmount', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 20,),
               Text('Expenses Ksh. $expensesAmount', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            ],
+                        ],            
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: ElevatedButton.icon(
+              onPressed: addExpense
+              ,
+              icon: const Icon(Icons.add), 
+              label: const Text('Add Expenses')
+                
+            ),          
+            
           ),
 
         ],

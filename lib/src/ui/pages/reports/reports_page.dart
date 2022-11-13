@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trucks_manager/src/ui/pages/reports_details_page.dart';
+import 'package:trucks_manager/src/ui/pages/reports/reports_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/item_card_widget.dart';
 
 class ReportsPage extends StatelessWidget {
