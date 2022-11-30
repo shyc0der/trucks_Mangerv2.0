@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:trucks_manager/src/models/order_model.dart';
 import 'package:trucks_manager/src/modules/job_module.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
@@ -14,7 +15,7 @@ import '../../widgets/order_items_widget.dart';
 import '../../widgets/update_state_widget.dart';
 
 class ExpenseDetailsPage extends StatefulWidget {
-  ExpenseDetailsPage(this.expensesModel, {Key? key}) : super(key: key);
+  const ExpenseDetailsPage(this.expensesModel, {Key? key}) : super(key: key);
   final ExpenseModel expensesModel;
 
   @override
@@ -24,9 +25,10 @@ class ExpenseDetailsPage extends StatefulWidget {
 class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
   final TruckModules _truckModules = TruckModules();
   final UserModule userModule = Get.find<UserModule>();
-  final ExpenseModule _expenseModule = Get.put(ExpenseModule());
-  final JobModule jobModule2 = Get.put<JobModule>(JobModule());
+  final ExpenseModule _expenseModule = Get.find<ExpenseModule>();
+  final JobModule jobModule2 = Get.find<JobModule>();
   final OrderModules _orderModules = Get.find<OrderModules>();
+    NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
 
   OrderWidgateState _expenseState = OrderWidgateState.Pending;
 
@@ -82,8 +84,10 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
                           ),
                           Text(
                             _expenseState.value,
-                            style: TextStyle(color: _expenseState.color,
-                                fontWeight: FontWeight.bold, fontSize: 20),
+                            style: TextStyle(
+                                color: _expenseState.color,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
                           ),
                           if (_expenseState != OrderWidgateState.Closed)
                             ElevatedButton(
@@ -97,8 +101,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
                                   if (_state != null) {
                                     // update online
                                     await _expenseModule.updateExpenseState(
-                                        widget.expensesModel.id!,
-                                        _state);
+                                        widget.expensesModel.id!, _state);
                                     // setState
                                     setState(() {
                                       _expenseState = _state;
@@ -122,7 +125,7 @@ class _ExpenseDetailsPageState extends State<ExpenseDetailsPage> {
                         children: [
                           // amount
                           Text(
-                              "Ksh.${(widget.expensesModel.totalAmount ?? '')}"),
+                              "Ksh.${doubleFormat.format(double.tryParse((widget.expensesModel.totalAmount ?? '0')))}"),
                           // state
                           // Text(expensesModel.state)
                         ],

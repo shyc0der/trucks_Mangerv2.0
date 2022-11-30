@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class TruckWidget extends StatelessWidget {
   const TruckWidget({required this.registration, required this.jobsAmount, required this.expensesAmount, this.addExpense, Key? key}) : super(key: key);
   final String registration;
-  final double jobsAmount;
+  final String jobsAmount;
   final String expensesAmount;
  final void Function()? addExpense;
 

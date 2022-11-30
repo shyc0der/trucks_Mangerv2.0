@@ -1,7 +1,7 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, annotate_overrides
 
 import 'package:flutter/material.dart' show DateTimeRange;
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 import 'package:pdf_reports_generator/pdf_reports_generator.dart';
 import 'package:trucks_manager/src/models/jobs_model.dart';
 import 'package:trucks_manager/src/models/order_model.dart';
@@ -25,6 +25,7 @@ class JobsReport extends ReportGeneratorModule{
   final ExpenseModule _expenseModule = ExpenseModule();
   final UserModule _userModule = UserModule();
   final TruckModules _truckModule = TruckModules();
+  UserModule userModule=Get.find<UserModule>();
 
   List<JobsReportModel> jobs = [];
 
@@ -61,7 +62,7 @@ class JobsReport extends ReportGeneratorModule{
       double _expensesPerJobTotal = 0;
       
             // then get expenses by job id
-      final _exs = await _expenseModule.fetchByJobExpenses(_job.id ?? 'null').first;
+      final _exs = await _expenseModule.fetchByJobExpenses(_job.id ?? 'null',userModule.currentUser.value).first;
       
       
       for(var _e in _exs){

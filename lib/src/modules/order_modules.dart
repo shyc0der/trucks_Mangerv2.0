@@ -105,11 +105,8 @@ class OrderModules extends GetxController {
 
 //get order by jobid
   Future<OrderModel> fetchOrderByJobId(String _jobId) async {
-     print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
     final jobs = _jobModule.getJobById(_jobId);
-    print(jobs);
     final _orderMap = await _orderModel.fetchDataById(jobs!.orderId!);
-    print(_orderMap);
     return OrderModel.from({'id': _orderMap.id, ...(_orderMap.data() ?? {})});
   }
 
@@ -167,9 +164,23 @@ class OrderModules extends GetxController {
       orders.add(orderModel);
     }
 
-    print('ggggggggggggggggggggggg');
-    print(orders);
-
     return orders;
+  }
+
+//amount by type
+  var map = Map();
+  Stream<List<OrderModel>> fetchOrderByTitle() {
+    return _orderModel
+        .fetchStreamsData(orderBy: 'dateCreated')
+        .map<List<OrderModel>>((snapshot) {
+        var _orders = snapshot.docs.map<OrderModel>((doc) {
+        return OrderModel.from({...(doc.data() as Map), 'id': doc.id});
+        
+      }).toList();
+      
+      orders.clear();
+      orders.addAll(_orders);
+      return _orders;
+    });
   }
 }

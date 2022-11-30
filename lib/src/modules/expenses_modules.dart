@@ -36,15 +36,29 @@ class ExpenseModule extends GetXState {
     }
   }
 
-  Stream<List<ExpenseModel>> fetchByTruckExpenses(String truckId) {
-    return _expensesModel
-        .fetchStreamsDataWhere("truckId", isEqualTo: truckId, orderBy: 'date')
-        .map<List<ExpenseModel>>((snapshot) {
-      return snapshot.docs
-          .map<ExpenseModel>((doc) =>
-              ExpenseModel.fromMap({'id': doc.id, ...doc.data() as Map}))
-          .toList();
-    });
+  Stream<List<ExpenseModel>> fetchByTruckExpenses(
+      String truckId, UserModel user) {
+    if (user.userRole == UserWidgetType.admin ||
+        user.userRole == UserWidgetType.manager) {
+      return _expensesModel
+          .fetchStreamsDataWhere("truckId", isEqualTo: truckId, orderBy: 'date')
+          .map<List<ExpenseModel>>((snapshot) {
+        return snapshot.docs
+            .map<ExpenseModel>((doc) =>
+                ExpenseModel.fromMap({'id': doc.id, ...doc.data() as Map}))
+            .toList();
+      });
+    } else {
+      return _expensesModel
+          .fetchStreamsDataWhere("truckId", isEqualTo: truckId, orderBy: 'date')
+          .map<List<ExpenseModel>>((snapshot) {
+        return snapshot.docs
+            .map<ExpenseModel>((doc) =>
+                ExpenseModel.fromMap({'id': doc.id, ...doc.data() as Map}))
+            .where((element) => element.userId == user.id)
+            .toList();
+      });
+    }
   }
 
   // fetch expense where
@@ -66,18 +80,32 @@ class ExpenseModule extends GetXState {
   }
 
   // fetch expense by job
-  Stream<List<ExpenseModel>> fetchByJobExpenses(String jobId) {
-    var expenses = _expensesModel
-        .fetchStreamsDataWhere('jobId', isEqualTo: jobId, orderBy: 'date')
-        
-        .map<List<ExpenseModel>>((snapshot) {
-      return snapshot.docs
-          .map<ExpenseModel>((doc) =>
-              ExpenseModel.fromMap({'id': doc.id, ...doc.data() as Map})
-              )
-          .toList();
-    });
-    return expenses;
+  Stream<List<ExpenseModel>> fetchByJobExpenses(String jobId, UserModel user) {
+    if (user.userRole == UserWidgetType.admin ||
+        user.userRole == UserWidgetType.manager) {
+      var expenses = _expensesModel
+          .fetchStreamsDataWhere('jobId', isEqualTo: jobId, orderBy: 'date')
+          .map<List<ExpenseModel>>((snapshot) {
+        return snapshot.docs
+            .map<ExpenseModel>((doc) =>
+                ExpenseModel.fromMap({'id': doc.id, ...doc.data() as Map}))
+            .toList();
+      });
+      return expenses;
+    }
+    else{
+ var expenses = _expensesModel
+          .fetchStreamsDataWhere('jobId', isEqualTo: jobId, orderBy: 'date')
+          .map<List<ExpenseModel>>((snapshot) {
+        return snapshot.docs
+            .map<ExpenseModel>((doc) =>
+                ExpenseModel.fromMap({'id': doc.id, ...doc.data() as Map}))
+                .where((element) => element.userId == user.id)
+            .toList();
+      });
+      return expenses;
+
+    }
   }
 
   // add
@@ -106,16 +134,19 @@ class ExpenseModule extends GetXState {
     return ResponseModel(ResponseType.success, 'Expense Updated');
   }
 
-
-  Future<bool> updateExpenseState(String expenseId, OrderWidgateState expenseSate) async{
+  Future<bool> updateExpenseState(
+      String expenseId, OrderWidgateState expenseSate) async {
     await _expensesModel.updateOnline(expenseId, {
       'state': expenseSate.value,
-      if(expenseSate == OrderWidgateState.Open || expenseSate == OrderWidgateState.Rejected) 'dateApproved': DateTime.now().toIso8601String(),
-      if(expenseSate == OrderWidgateState.Rejected) 'dateClosed': DateTime.now().toIso8601String() ,
+      if (expenseSate == OrderWidgateState.Open ||
+          expenseSate == OrderWidgateState.Rejected)
+        'dateApproved': DateTime.now().toIso8601String(),
+      if (expenseSate == OrderWidgateState.Rejected)
+        'dateClosed': DateTime.now().toIso8601String(),
       'dateRejected': DateTime.now().toIso8601String(),
-      if(expenseSate == OrderWidgateState.Closed) 'dateClosed': DateTime.now().toIso8601String(),
+      if (expenseSate == OrderWidgateState.Closed)
+        'dateClosed': DateTime.now().toIso8601String(),
     });
     return true;
   }
-
 }

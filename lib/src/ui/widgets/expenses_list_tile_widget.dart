@@ -5,7 +5,7 @@ class ExpensesListTile extends StatelessWidget {
   final String title;
   final String driverName;
   final DateTime dateTime;
-  final double amount;
+  final String amount;
   final OrderWidgateState expenseState;
   final void Function()? onTap;
 

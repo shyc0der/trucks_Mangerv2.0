@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf_reports_generator/pdf_reports_generator.dart' as pw;
 import 'package:trucks_manager/src/modules/job_module.dart';
@@ -29,6 +30,7 @@ class OrderDetailPageState extends State<OrderDetailPage> {
   final UserModule _userModule = Get.put(UserModule());
   final JobModule _jobModule = JobModule();
   String _orderState = '';
+    NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
   OrderWidgateState orderState = OrderWidgateState.Pending;
   @override
   void initState() {
@@ -53,7 +55,7 @@ class OrderDetailPageState extends State<OrderDetailPage> {
             // order detail
             OrderDetailWidget(
               title: widget.order.title ?? '',
-              amount: 'Ksh. ${widget.order.amount}',
+              amount: 'Ksh. ${doubleFormat.format((widget.order.amount ?? 0).ceilToDouble())}',
               date: widget.order.dateCreated.toString().substring(0, 16),
               orderState: orderState,
               update: () async {

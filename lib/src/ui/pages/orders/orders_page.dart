@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
 import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/pages/orders/orders_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/job_list_tile_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
-
 import '../../../models/order_model.dart';
 import 'add_order_widget.dart';
 
@@ -22,6 +22,7 @@ class _OrdersPageState extends State<OrdersPage> {
   late List<OrderModel> displayOrder;
   final OrderModules _orderModules = OrderModules();
   final UserModule _userModule = Get.find<UserModule>();
+   NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
 
   void _changeView(int val) {
     switch (val) {
@@ -106,7 +107,7 @@ class _OrdersPageState extends State<OrdersPage> {
             return JobListTile(
               title: displayOrders[index].title ?? '',
               dateTime: displayOrders[index].dateCreated,
-              amount: displayOrders[index].amount ?? 0,
+              amount: doubleFormat.format((displayOrders[index].amount ?? 0).ceilToDouble()),
               jobState: displayOrders[index].orderStates,
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(

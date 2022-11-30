@@ -81,7 +81,7 @@ class UserModule extends GetxController {
   //fetch users Name
   Future<Map<String, dynamic>> fetchUsersName() async {
     final Map<String, dynamic> _map = {};
-    final _users = await userModel.fetchData();
+    final _users = await userModel.fetchWhereData("role" ,isEqualTo: 'driver');
 
     for (var user in _users) {
       _map.addAll({user.id: user.data()});

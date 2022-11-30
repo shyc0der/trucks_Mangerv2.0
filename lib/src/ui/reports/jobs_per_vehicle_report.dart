@@ -31,6 +31,7 @@ class JobsPerVehicle extends ReportGeneratorModule {
   final String vehicleId;
   final List<String> selectedJobTypes;
   final List<JobsPerVehicleModel> _jobsPerV = [];
+  UserModule userModule=Get.find<UserModule>();
 
   String get _vehicleReg =>
       _jobModule.getTruckById(vehicleId)?.vehicleRegNo ?? 'null';
@@ -75,7 +76,7 @@ class JobsPerVehicle extends ReportGeneratorModule {
       // get expenses total
       double _expenseAmount = 0;
       for (var _expense in (await _expenseModule
-          .fetchByJobExpenses(_job.id ?? 'null')
+          .fetchByJobExpenses(_job.id ?? 'null', userModule.currentUser.value)
           .first)) {
         if (_expense.expensesState == OrderWidgateState.Approved ||
             _expense.expensesState == OrderWidgateState.Closed) {

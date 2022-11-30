@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
     _tabController.addListener(() {
       setState(() {});
     });
@@ -149,15 +149,12 @@ class _HomePageState extends State<HomePage>
         title: const Text('Truck Manager'),
       ),
       body: TabBarView(controller: _tabController, children: [
-        // reports page
-        const ReportsPage(),
-
-        // work page
+        // reports page 
         WorkPage(),
-
-      //if(_userModule.isSuperUser.value)
         // users page
-       UsersPage(),
+        UsersPage(),
+      //if(_userModule.isSuperUser.value)
+        const ReportsPage(),
       ]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _tabController.index,
@@ -168,11 +165,11 @@ class _HomePageState extends State<HomePage>
         },
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.pie_chart_outline), label: 'Reports'),
-          BottomNavigationBarItem(
               icon: Icon(Icons.work_history_outlined), label: 'Work'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person_add_alt_1_outlined), label: 'Users'),
+              icon: Icon(Icons.person_add_alt_1_outlined), label: 'Users'),              
+          BottomNavigationBarItem(
+              icon: Icon(Icons.pie_chart_outline), label: 'Reports'),
         ],
       ),
     );

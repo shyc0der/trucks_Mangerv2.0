@@ -1,23 +1,20 @@
 // ignore_for_file: must_be_immutable, no_leading_underscores_for_local_identifiers
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:trucks_manager/src/models/jobs_model.dart';
 import 'package:trucks_manager/src/models/trucks_model.dart';
 import 'package:trucks_manager/src/modules/expenses_modules.dart';
 import 'package:trucks_manager/src/modules/job_module.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
-import 'package:trucks_manager/src/modules/trucks_modules.dart';
 import 'package:trucks_manager/src/ui/pages/jobs/jobs_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/expenses_list_tile_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/job_list_tile_widget.dart';
-import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/truck_widget.dart';
 
 import '../../../models/expenses_model.dart';
-import '../../../models/order_model.dart';
+import '../../../modules/user_modules.dart';
 import '../expenses/add_expense_widget.dart';
 import '../expenses/expense_details_page.dart';
 
@@ -33,6 +30,7 @@ class _TruckDetailsPageState extends State<TruckDetailsPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   final OrderModules _orderModules = OrderModules();
+  NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
   @override
   void initState() {
     super.initState();
@@ -44,8 +42,7 @@ class _TruckDetailsPageState extends State<TruckDetailsPage>
 
   Future<double> getTotalJobAmount(String truckId) async {
     double amounts = 0;
-    print('pisss');
-    var trucks = await _orderModules.fetchOrderByTruckId(truckId);
+     var trucks = await _orderModules.fetchOrderByTruckId(truckId);
     for (var truck in trucks) {
       amounts += truck.amount ?? 0;
     }
@@ -72,11 +69,10 @@ class _TruckDetailsPageState extends State<TruckDetailsPage>
           FutureBuilder<double>(
               future: getTotalJobAmount(widget.trucksModel!.id!),
               builder: (context, snapshot) {
-                print(snapshot.data);
                 return TruckWidget(
                     registration: widget.trucksModel!.vehicleRegNo ?? '',
                     //TO:DO CALCULATE AMOUNTS PER VEHICLE
-                    jobsAmount: snapshot.data ?? 0,
+                    jobsAmount: doubleFormat.format( (snapshot.data ?? 0).ceilToDouble()),
                     expensesAmount: 'Ksh. 50,000',
                     addExpense: () async {
                       await showDialog(
@@ -156,7 +152,7 @@ class _ListOfJobs extends StatelessWidget {
                 return JobListTile(
                   title: fetchOrder(snapshot.data![index].orderId) ?? '',
                   dateTime: snapshot.data![index].dateCreated,
-                  amount: fetchAmount(snapshot.data![index].orderId) ?? 0,
+                  amount: ((fetchAmount(snapshot.data![index].orderId) ?? 0).toString()),
                   jobState: snapshot.data![index].jobStates,
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -177,11 +173,13 @@ class _ListOfExpenses extends StatelessWidget {
   _ListOfExpenses(this.truckId, {Key? key}) : super(key: key);
   String? truckId;
   final ExpenseModule _expenseModule = ExpenseModule();
+   UserModule userModule=Get.find<UserModule>();
+   NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<ExpenseModel>>(
-        stream: _expenseModule.fetchByTruckExpenses(truckId!),
+        stream: _expenseModule.fetchByTruckExpenses(truckId!,userModule.currentUser.value),
         builder: (context, snapshot) {
           List<ExpenseModel> _expenses = snapshot.data ?? [];
           return ListView.builder(
@@ -192,7 +190,7 @@ class _ListOfExpenses extends StatelessWidget {
                 driverName: _expenses[index].userId ?? '',
                 dateTime: _expenses[index].date,
                 amount:
-                    double.tryParse(_expenses[index].totalAmount ?? '0') ?? 0,
+                    doubleFormat.format(double.tryParse(_expenses[index].totalAmount ?? '0')) ,
                 expenseState: _expenses[index].expensesState,
                  onTap:() {
               Navigator.of(context).push(MaterialPageRoute(

@@ -8,11 +8,13 @@ import 'package:trucks_manager/src/ui/pages/trucks/truck_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/item_card_widget.dart';
 
 import '../../../modules/expenses_modules.dart';
+import '../../../modules/user_modules.dart';
 
 class TrucksListPage extends StatelessWidget {
   TrucksListPage({Key? key}) : super(key: key);
   final TruckModules _truckModules = TruckModules();
   final ExpenseModule _expenseModule = Get.put(ExpenseModule());
+   UserModule userModule=Get.find<UserModule>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class TrucksListPage extends StatelessWidget {
                   children: [
                     for (var truck in trucks)
                       StreamBuilder<List<ExpenseModel>>(
-                          stream: _expenseModule.fetchByTruckExpenses(truck!.id!),
+                          stream: _expenseModule.fetchByTruckExpenses(truck!.id!,userModule.currentUser.value),
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
                               return Text('Error = ${snapshot.error}');

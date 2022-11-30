@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:trucks_manager/src/modules/expenses_modules.dart';
 import 'package:trucks_manager/src/ui/pages/expenses/expense_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/expenses_list_tile_widget.dart';
@@ -21,6 +22,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
   late List<ExpenseModel> displayExpenses = [];
   final ExpenseModule _expenseModule = ExpenseModule();
   UserModule userModule=Get.find<UserModule>();
+    NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
 
   void _changeView(int val) {
     switch (val) {
@@ -84,7 +86,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
             driverName: displayExpenses[index].description ?? '',
             dateTime: displayExpenses[index].date,
             amount:
-            double.tryParse(displayExpenses[index].totalAmount ?? '0') ?? 0,
+            doubleFormat.format((double.tryParse(displayExpenses[index].totalAmount ?? '0'))),
             expenseState: displayExpenses[index].expensesState,
             onTap:() {
               Navigator.of(context).push(MaterialPageRoute(

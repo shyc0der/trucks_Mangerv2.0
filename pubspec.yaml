@@ -45,6 +45,8 @@ dependencies:
     path: D:\Flutter\pdf_reports_generator
   printing: ^5.7.2
   get: ^4.6.5
+  collection: ^1.16.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

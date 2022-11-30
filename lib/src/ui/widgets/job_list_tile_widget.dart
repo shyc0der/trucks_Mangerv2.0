@@ -12,7 +12,7 @@ class JobListTile extends StatelessWidget {
       : super(key: key);
   final String title;
   final DateTime dateTime;
-  final double amount;
+  final String amount;
   final OrderWidgateState jobState;
   final void Function()? onTap;
 
@@ -27,14 +27,17 @@ class JobListTile extends StatelessWidget {
         ),
         title: Text(title),
         subtitle: Text(dateTime.toString().substring(0, 16)),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-          Text('Ksh. ${amount.ceilToDouble()}'),
-
-          Text(jobState.value,style: TextStyle(color: jobState.color,fontWeight: FontWeight.bold,fontSize: 14.5),)
-          
-          ]),
+        trailing:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Text('Ksh. $amount'),
+          Text(
+            jobState.value,
+            style: TextStyle(
+                color: jobState.color,
+                fontWeight: FontWeight.bold,
+                fontSize: 14.5),
+          )
+        ]),
       ),
     );
   }

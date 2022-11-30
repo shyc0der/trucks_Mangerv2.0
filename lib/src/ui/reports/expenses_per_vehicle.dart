@@ -8,6 +8,7 @@ import 'package:trucks_manager/src/ui/reports/reports_generator_module.dart';
 
 import '../../models/expenses_model.dart';
 import '../../modules/expenses_modules.dart';
+import '../../modules/user_modules.dart';
 
 class ExpensesPerVehicleReport extends ReportGeneratorModule{
   ExpensesPerVehicleReport(this.vehicleId, {this.expenseType = const [], required this.dateRange});
@@ -17,6 +18,7 @@ class ExpensesPerVehicleReport extends ReportGeneratorModule{
 
   final ExpenseModule _expenseModule = ExpenseModule();
     final TruckModules _truckModule = TruckModules();
+    UserModule userModule=Get.find<UserModule>();
 
   List<ExpenseModel> expenses = [];
   List<String> _filters = [];
@@ -33,7 +35,7 @@ class ExpensesPerVehicleReport extends ReportGeneratorModule{
   }
 
   Future getExpenses()async{
-    expenses = await _expenseModule.fetchByTruckExpenses(vehicleId).first;
+    expenses = await _expenseModule.fetchByTruckExpenses(vehicleId,userModule.currentUser.value).first;
 
     // filter by date
     expenses.retainWhere((expense) {

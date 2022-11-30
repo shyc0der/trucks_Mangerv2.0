@@ -164,7 +164,8 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
     List<Object?>? whereNotIn,
     bool? isNull,
     String? orderBy,
-  }) {
+  } 
+  ) {
     final ref = firestore.collection(collectionName);
     var ref2;
     if (orderBy != null) {
@@ -172,6 +173,7 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
     } else {
       ref2 = ref;
     }
+    
     return ref2
         .where(
           field,
@@ -186,8 +188,58 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
           whereIn: whereIn,
           whereNotIn: whereNotIn,
           isNull: isNull,
-        )
-        .snapshots();
+        ).snapshots();
+  }
+   Stream<QuerySnapshot> fetchStreamsDatasWhere(
+    String field, String field2,{
+    Object? isEqualTo,
+    Object? isNotEqualTo,
+    Object? isLessThan,
+    Object? isLessThanOrEqualTo,
+    Object? isGreaterThan,
+    Object? isGreaterThanOrEqualTo,
+    Object? arrayContains,
+    List<Object?>? arrayContainsAny,
+    List<Object?>? whereIn,
+    List<Object?>? whereNotIn,
+    bool? isNull,
+    String? orderBy,
+  } 
+  ) {
+    final ref = firestore.collection(collectionName);
+    var ref2;
+    if (orderBy != null) {
+      ref2 = ref.orderBy(orderBy, descending: true);
+    } else {
+      ref2 = ref;
+    }    
+    return ref2
+        .where(
+          field,
+          isEqualTo: isEqualTo,
+          isNotEqualTo: isNotEqualTo,
+          isLessThan: isLessThan,
+          isLessThanOrEqualTo: isLessThanOrEqualTo,
+          isGreaterThan: isGreaterThan,
+          isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
+          arrayContains: arrayContains,
+          arrayContainsAny: arrayContainsAny,
+          whereIn: whereIn,
+          whereNotIn: whereNotIn,
+          isNull: isNull,
+        ).where(field2,
+          isEqualTo: isEqualTo,
+          isNotEqualTo: isNotEqualTo,
+          isLessThan: isLessThan,
+          isLessThanOrEqualTo: isLessThanOrEqualTo,
+          isGreaterThan: isGreaterThan,
+          isGreaterThanOrEqualTo: isGreaterThanOrEqualTo,
+          arrayContains: arrayContains,
+          arrayContainsAny: arrayContainsAny,
+          whereIn: whereIn,
+          whereNotIn: whereNotIn,
+          isNull: isNull,
+        ).snapshots();
   }
 }
 // options: FirebaseOptions(

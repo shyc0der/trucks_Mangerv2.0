@@ -1,6 +1,8 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:trucks_manager/src/models/jobs_model.dart';
 import 'package:trucks_manager/src/models/order_model.dart';
 import 'package:trucks_manager/src/models/trucks_model.dart';
@@ -10,7 +12,7 @@ import 'package:trucks_manager/src/modules/order_modules.dart';
 import 'package:trucks_manager/src/modules/trucks_modules.dart';
 import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/pages/expenses/add_expense_widget.dart';
-import 'package:trucks_manager/src/ui/pages/trucks/truck_details_page.dart';
+import 'package:trucks_manager/src/ui/pages/expenses/expense_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/order_items_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/update_state_widget.dart';
 
@@ -35,8 +37,9 @@ class JobDetailPageState extends State<JobDetailPage>
   final TruckModules _truckModules = TruckModules();
   final OrderModules _orderModule = OrderModules();
   final JobModule _jobModule = JobModule();
-  final UserModule _userModule = UserModule();
-  
+  UserModule userModule = Get.find<UserModule>();
+  NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
+
   String _jobState = '';
   final ExpenseModule _expenseModule = ExpenseModule();
 
@@ -79,7 +82,7 @@ class JobDetailPageState extends State<JobDetailPage>
                   if (snapshot.hasData) {
                     return JobDetailWidget(
                         title: snapshot.data!.title ?? '',
-                        amount: 'Ksh. ${snapshot.data!.amount?.ceilToDouble()}',
+                        amount: 'Ksh. ${(doubleFormat.format((snapshot.data!.amount ?? 0).ceilToDouble()))}',
                         date: snapshot.data!.dateCreated
                             .toString()
                             .substring(0, 16),
@@ -103,7 +106,7 @@ class JobDetailPageState extends State<JobDetailPage>
                           OrderWidgateState? _state =
                               await changeDialogStateJob(getJobState,
                                   isDriver:
-                                      _userModule.currentUser.value.userRole ==
+                                      userModule.currentUser.value.userRole ==
                                           UserWidgetType.driver);
 
                           if (_state != null) {
@@ -120,7 +123,7 @@ class JobDetailPageState extends State<JobDetailPage>
                           OrderWidgateState? _state =
                               await changeDialogStateJob(getJobState,
                                   isDriver:
-                                      _userModule.currentUser.value.userRole ==
+                                      userModule.currentUser.value.userRole ==
                                           UserWidgetType.driver);
 
                           if (_state != null) {
@@ -128,14 +131,10 @@ class JobDetailPageState extends State<JobDetailPage>
                                 widget.job.id.toString(), _state);
                             await _orderModule.updateOrderState(
                                 widget.job.orderId.toString(), _state);
-
-                            setState(() {
-                              _jobState = _state.value;
-                            });
-
-                            if (_state == OrderWidgateState.Closed) {
+                               
+                           if (_state == OrderWidgateState.Closed) {
                               Navigator.pop(context);
-                            }
+                                }
                           }
                         });
                   }
@@ -151,12 +150,11 @@ class JobDetailPageState extends State<JobDetailPage>
             // driver detail
             if (widget.job.jobStates != OrderWidgateState.Pending)
               FutureBuilder<UserModel>(
-                  future: _userModule.fetchTruckByUser(widget.job.driverId!),
+                  future: userModule.fetchTruckByUser(widget.job.driverId!),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return const Center(
-                        child: Text('Driver Not Found'),
-                      );
+                        child: Text('Driver Not Found'),);
                     }
                     if (snapshot.hasData) {
                       return OrderItemsDriverWidget(
@@ -196,22 +194,69 @@ class JobDetailPageState extends State<JobDetailPage>
               SizedBox(
                 child: SingleChildScrollView(
                     child: StreamBuilder<List<ExpenseModel>>(
-                        stream:
-                            _expenseModule.fetchByJobExpenses(widget.job.id!),
+                        stream: _expenseModule.fetchByJobExpenses(
+                            widget.job.id!, userModule.currentUser.value),
                         builder: (context, snapshot) {
                           List<ExpenseModel> _expenses = snapshot.data ?? [];
                           return ListView.builder(
                             shrinkWrap: true,
                             itemCount: _expenses.length,
                             itemBuilder: (_, index) {
-                              return ExpensesListTile(
-                                title: _expenses[index].expenseType ?? '',
-                                driverName: _expenses[index].userId ?? '',
-                                dateTime: _expenses[index].date,
-                                amount: double.tryParse(
-                                        _expenses[index].totalAmount ?? '0') ??
-                                    0,
-                                expenseState: _expenses[index].expensesState,
+                              return GestureDetector(
+                               onDoubleTap : () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (_) => ExpenseDetailsPage(
+                                            _expenses[index]))),
+                              
+                               onTap : () {
+                                 
+                                  AlertDialog alert = 
+                                  AlertDialog(
+                                    title: const Text('Update Expense State'),
+                                    actions: [
+                                        ElevatedButton(
+                                            onPressed: () async {
+                                              OrderWidgateState? _state =
+                                                  await changeDialogStateJob(
+                                                      _expenses[index]
+                                                          .expensesState,
+                                                      isSuperUser: userModule
+                                                          .isSuperUser.value,
+                                                      isJob: false);
+
+                                              if (_state != null) {
+                                                // update online
+                                                await _expenseModule
+                                                    .updateExpenseState(
+                                                        _expenses[index].id!,
+                                                        _state);
+                                                // setState
+
+                                              }
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Update State'))
+                                    ],
+                                  );
+                           if (_expenses[index].expensesState != OrderWidgateState.Closed)   {
+                            showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return alert;
+                                    },
+                                  );
+                           }
+                                  
+                                },
+                                child: ExpensesListTile(
+                                  title: _expenses[index].expenseType ?? '',
+                                  driverName: _expenses[index].userId ?? '',
+                                  dateTime: _expenses[index].date,
+                                  amount: 
+                                  doubleFormat.format(double.tryParse(_expenses[index].totalAmount ?? '0')),
+                                              
+                                  expenseState: _expenses[index].expensesState,
+                                ),
                               );
                             },
                           );

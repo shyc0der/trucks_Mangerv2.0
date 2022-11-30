@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:trucks_manager/src/models/jobs_model.dart';
 import 'package:trucks_manager/src/models/order_model.dart';
 import 'package:trucks_manager/src/modules/job_module.dart';
@@ -9,6 +10,7 @@ import 'package:trucks_manager/src/modules/order_modules.dart';
 import 'package:trucks_manager/src/ui/pages/jobs/jobs_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/job_list_tile_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
+
 
 import '../../../modules/user_modules.dart';
 
@@ -28,6 +30,7 @@ class _JobsPageState extends State<JobsPage> {
   final JobModule _jobModule = JobModule();
   final OrderModules orderModules = Get.put<OrderModules>(OrderModules());
   final UserModule userModule = Get.find<UserModule>();
+    NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
 
   String? fetchOrder(String? orderId) {
     var res = orderModules.getOrderByJobId(orderId!);
@@ -107,7 +110,7 @@ class _JobsPageState extends State<JobsPage> {
           return JobListTile(
             title: displayJobs[index].orderNo ?? '',
             dateTime: displayJobs[index].dateCreated,
-            amount: fetchAmount(displayJob[index].orderId) ?? 0,
+            amount: doubleFormat.format((fetchAmount(displayJob[index].orderId) ?? 0).ceilToDouble()),
             jobState: displayJobs[index].jobStates,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
