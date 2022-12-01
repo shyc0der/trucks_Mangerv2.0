@@ -156,7 +156,7 @@ class OrderDetailPageState extends State<OrderDetailPage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => _pdfGenerator(
-                                    isQuotation: true,
+                                    isInvoice: true,
                                   ))),
                       child: const Text('Invoice'),
                     ),

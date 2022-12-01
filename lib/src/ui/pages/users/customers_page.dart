@@ -22,7 +22,7 @@ class CustomersPage extends StatelessWidget {
         centerTitle: true,
         title: const Text('Customers'),
       ),
-      body: UsersListPage(isCustomer),
+      body: UsersListPage(isCustomer,false),
     );
   }
 

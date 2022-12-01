@@ -10,19 +10,21 @@ import '../../../models/user_model.dart';
 
 class UsersListPage extends StatelessWidget {
   UsersListPage(
-    this.isCustomer, {
+    this.isCustomer,
+    this.isDriver, {
     Key? key,
   }) : super(key: key);
   //final Stream<List<UserModel?>> users;
   final UserModule _userModule = UserModule();
   bool isCustomer = false;
+  bool isDriver = false;
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: StreamBuilder<List<UserModel?>>(
-            stream: _userModule.fetchUsersWhere(isCustomer),
+            stream: _userModule.fetchUsersWhere(isCustomer,isDriver),
             builder: (context, snapshot) {
               var user = snapshot.data ?? [];
               user.sort(

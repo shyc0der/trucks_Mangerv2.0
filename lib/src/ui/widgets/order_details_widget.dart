@@ -117,6 +117,8 @@ extension OrderWidgateStateExt on OrderWidgateState {
         return Colors.red;
         case OrderWidgateState.Declined:
         return Colors.red;
+      case OrderWidgateState.Closed:
+        return const Color.fromARGB(255, 48, 48, 48);
       default:
         return Colors.grey;
     }

@@ -16,6 +16,7 @@ import 'package:trucks_manager/src/ui/pages/users/customers_page.dart';
 import 'package:trucks_manager/src/ui/pages/expenses/expenses_page.dart';
 import 'package:trucks_manager/src/ui/pages/orders/orders_page.dart';
 import 'package:trucks_manager/src/ui/pages/trucks/trucks_list_page.dart';
+import 'package:trucks_manager/src/ui/pages/users/users_page.dart';
 import 'package:trucks_manager/src/ui/widgets/item_card_widget.dart';
 
 import 'jobs/jobs_page.dart';
@@ -137,7 +138,7 @@ class WorkPage extends StatelessWidget {
 
             // customers
             StreamBuilder<List<UserModel>>(
-                stream: _userModule.fetchUsersWhere(true),
+                stream: _userModule.fetchUsersWhere(true,false),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Text('Error = ${snapshot.error}');
@@ -150,6 +151,29 @@ class WorkPage extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (_) => const CustomersPage()));
+                    },
+                  );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
+//drivers
+       StreamBuilder<List<UserModel>>(
+                stream: _userModule.fetchUsersWhere(false,true),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error = ${snapshot.error}');
+                  }
+                  if (snapshot.hasData) {
+                  return ItemCardWidget(
+                    label: 'Drivers',
+                    count: snapshot.data!.length,
+                    iconData: Icons.people_alt_outlined,
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => UsersPage(false,true)));
                     },
                   );
                   } else {

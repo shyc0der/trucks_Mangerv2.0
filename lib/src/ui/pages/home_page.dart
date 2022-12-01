@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage>
         // reports page 
         WorkPage(),
         // users page
-        UsersPage(),
+        UsersPage(false,false),
       //if(_userModule.isSuperUser.value)
         const ReportsPage(),
       ]),

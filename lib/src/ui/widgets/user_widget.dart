@@ -138,7 +138,7 @@ extension UserWidgetTypeExt on UserWidgetType{
       case UserWidgetType.driver:
         return Colors.lightBlue;
       case UserWidgetType.customer:
-        return Colors.blueAccent;
+        return Colors.green;
       default:
         return Colors.grey;
     }

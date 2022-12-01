@@ -9,8 +9,10 @@ import '../../widgets/user_widget.dart';
 
 // ignore: must_be_immutable
 class UsersPage extends StatelessWidget {
- UsersPage({Key? key}) : super(key: key);
- final bool isCustomer = false;
+ UsersPage(this.isCustomer,
+    this.isDriver,{Key? key}) : super(key: key);
+  bool isCustomer = false;
+  bool isDriver = false;
 UserModule userModule=Get.find<UserModule>();
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ UserModule userModule=Get.find<UserModule>();
        
       body:  
       (userModule.currentUser.value.userRole == UserWidgetType.admin || userModule.currentUser.value.userRole == UserWidgetType.manager)
-      ? UsersListPage(isCustomer) : Container());
+      ? UsersListPage(isCustomer,isDriver) : Container());
 
       
     

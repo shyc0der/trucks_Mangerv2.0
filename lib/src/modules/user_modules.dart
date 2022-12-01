@@ -40,10 +40,20 @@ class UserModule extends GetxController {
   }
 
   bool isCustomer = false;
-  Stream<List<UserModel>> fetchUsersWhere(isCustomer) {
+  Stream<List<UserModel>> fetchUsersWhere(isCustomer,isDriver) {
     if (isCustomer == true) {
       return userModel
           .fetchStreamsDataWhere('role', isEqualTo: 'customer')
+          .map<List<UserModel>>((streams) {
+        return streams.docs
+            .map<UserModel>((doc) =>
+                UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
+            .toList();
+      });
+    }
+    if(isDriver == true){
+       return userModel
+          .fetchStreamsDataWhere('role', isEqualTo: 'driver')
           .map<List<UserModel>>((streams) {
         return streams.docs
             .map<UserModel>((doc) =>
@@ -59,6 +69,17 @@ class UserModule extends GetxController {
               (doc) => UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
           .toList();
     });
+  }
+    Stream<List<UserModel>> fetchDrivers() {
+          return userModel
+          .fetchStreamsDataWhere('role', isEqualTo: 'driver')
+          .map<List<UserModel>>((streams) {
+        return streams.docs
+            .map<UserModel>((doc) =>
+                UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
+            .toList();
+      });
+
   }
 
   Future<List<UserModel>> fetchListUsers() async {

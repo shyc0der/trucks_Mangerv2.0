@@ -42,8 +42,10 @@ class JobDetailPageState extends State<JobDetailPage>
 
   String _jobState = '';
   final ExpenseModule _expenseModule = ExpenseModule();
+  List<ExpenseModel> expenses = [];
 
   OrderWidgateState orderState = OrderWidgateState.Approved;
+  bool isExpenseState = false;
 
   @override
   void initState() {
@@ -82,7 +84,8 @@ class JobDetailPageState extends State<JobDetailPage>
                   if (snapshot.hasData) {
                     return JobDetailWidget(
                         title: snapshot.data!.title ?? '',
-                        amount: 'Ksh. ${(doubleFormat.format((snapshot.data!.amount ?? 0).ceilToDouble()))}',
+                        amount:
+                            'Ksh. ${(doubleFormat.format((snapshot.data!.amount ?? 0).ceilToDouble()))}',
                         date: snapshot.data!.dateCreated
                             .toString()
                             .substring(0, 16),
@@ -120,21 +123,41 @@ class JobDetailPageState extends State<JobDetailPage>
                           }
                         },
                         onClose: () async {
+                          if (expenses.isNotEmpty) {
+                            for (var element in expenses) {
+                            
+
+                              if (!element.state!.contains('Closed')) {
+                                setState(() {
+                                  isExpenseState = true;
+                                });
+                                break;
+                              }
+                              if (element.state!.contains('Closed')) {
+                                setState(() {
+                                  isExpenseState = false;
+                                });
+                                return;
+                              }
+                            }
+                          }
+
                           OrderWidgateState? _state =
                               await changeDialogStateJob(getJobState,
                                   isDriver:
                                       userModule.currentUser.value.userRole ==
-                                          UserWidgetType.driver);
+                                          UserWidgetType.driver,
+                                  isExpenseApproved: isExpenseState);
 
                           if (_state != null) {
                             await _jobModule.updateJobState(
                                 widget.job.id.toString(), _state);
                             await _orderModule.updateOrderState(
                                 widget.job.orderId.toString(), _state);
-                               
-                           if (_state == OrderWidgateState.Closed) {
+
+                            if (_state == OrderWidgateState.Closed) {
                               Navigator.pop(context);
-                                }
+                            }
                           }
                         });
                   }
@@ -154,7 +177,8 @@ class JobDetailPageState extends State<JobDetailPage>
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return const Center(
-                        child: Text('Driver Not Found'),);
+                        child: Text('Driver Not Found'),
+                      );
                     }
                     if (snapshot.hasData) {
                       return OrderItemsDriverWidget(
@@ -198,63 +222,61 @@ class JobDetailPageState extends State<JobDetailPage>
                             widget.job.id!, userModule.currentUser.value),
                         builder: (context, snapshot) {
                           List<ExpenseModel> _expenses = snapshot.data ?? [];
+                          expenses = snapshot.data ?? [];
+
                           return ListView.builder(
                             shrinkWrap: true,
                             itemCount: _expenses.length,
                             itemBuilder: (_, index) {
                               return GestureDetector(
-                               onDoubleTap : () => Navigator.of(context).push(
+                                onDoubleTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(
                                         builder: (_) => ExpenseDetailsPage(
                                             _expenses[index]))),
-                              
-                               onTap : () {
-                                 
-                                  AlertDialog alert = 
-                                  AlertDialog(
+                                onTap: () {
+                                  AlertDialog alert = AlertDialog(
                                     title: const Text('Update Expense State'),
                                     actions: [
-                                        ElevatedButton(
-                                            onPressed: () async {
-                                              OrderWidgateState? _state =
-                                                  await changeDialogStateJob(
-                                                      _expenses[index]
-                                                          .expensesState,
-                                                      isSuperUser: userModule
-                                                          .isSuperUser.value,
-                                                      isJob: false);
+                                      ElevatedButton(
+                                          onPressed: () async {
+                                            OrderWidgateState? _state =
+                                                await changeDialogStateJob(
+                                                    _expenses[index]
+                                                        .expensesState,
+                                                    isSuperUser: userModule
+                                                        .isSuperUser.value,
+                                                    isJob: false);
 
-                                              if (_state != null) {
-                                                // update online
-                                                await _expenseModule
-                                                    .updateExpenseState(
-                                                        _expenses[index].id!,
-                                                        _state);
-                                                // setState
+                                            if (_state != null) {
+                                              // update online
+                                              await _expenseModule
+                                                  .updateExpenseState(
+                                                      _expenses[index].id!,
+                                                      _state);
+                                              // setState
 
-                                              }
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('Update State'))
+                                            }
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Update State'))
                                     ],
                                   );
-                           if (_expenses[index].expensesState != OrderWidgateState.Closed)   {
-                            showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return alert;
-                                    },
-                                  );
-                           }
-                                  
+                                  if (_expenses[index].expensesState !=
+                                      OrderWidgateState.Closed) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return alert;
+                                      },
+                                    );
+                                  }
                                 },
                                 child: ExpensesListTile(
                                   title: _expenses[index].expenseType ?? '',
                                   driverName: _expenses[index].userId ?? '',
                                   dateTime: _expenses[index].date,
-                                  amount: 
-                                  doubleFormat.format(double.tryParse(_expenses[index].totalAmount ?? '0')),
-                                              
+                                  amount: doubleFormat.format(double.tryParse(
+                                      _expenses[index].totalAmount ?? '0')),
                                   expenseState: _expenses[index].expensesState,
                                 ),
                               );
