@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage>
         // users page
         UsersPage(false,false),
       //if(_userModule.isSuperUser.value)
-        const ReportsPage(),
+         ReportsPage(),
       ]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _tabController.index,
