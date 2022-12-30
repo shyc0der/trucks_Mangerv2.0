@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:trucks_manager/src/ui/login_page.dart';
 import 'package:trucks_manager/src/ui/pages/reports/reports_page.dart';
-import 'package:trucks_manager/src/ui/pages/users/users_page.dart';
+
 import 'package:trucks_manager/src/ui/pages/work_page.dart';
 import 'package:trucks_manager/src/ui/reports/expenses_per_vehicle.dart';
 import 'package:trucks_manager/src/ui/reports/expenses_reports.dart';
@@ -169,7 +169,7 @@ class _HomePageState extends State<HomePage>
           BottomNavigationBarItem(
               icon: Icon(Icons.work_history_outlined), label: 'Work'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person_add_alt_1_outlined), label: 'Users'),              
+              icon: Icon(Icons.person_add_alt_1_outlined), label: 'Others'),              
           BottomNavigationBarItem(
               icon: Icon(Icons.pie_chart_outline), label: 'Reports'),
         ],

@@ -20,7 +20,7 @@ class ExpenseTypeModule{
    return (await _expenseType.fetchData()).map((snapshot) => snapshot.data()['name'].toString()).toList();
  }
 
- void deleteExpenseTpe(String id)async{
-   _expenseType.deleteOnline(id);
+ Future<void> deleteExpenseTpe(String id)async{
+  await  _expenseType.deleteOnline(id);
  }
 }

@@ -22,7 +22,10 @@ final  ExpenseTypeModule _expenseModule= ExpenseTypeModule();
 
     if(_shouldDelete){
       // delete from server
-      _expenseModule.deleteExpenseTpe(expense.id ?? '');
+    await  _expenseModule.deleteExpenseTpe(expense.id ?? '');
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Expense Type Deleted!"),
+      ));
     }
 
 
@@ -34,7 +37,14 @@ final  ExpenseTypeModule _expenseModule= ExpenseTypeModule();
   Widget build(BuildContext context) {
     return 
        Scaffold(
+        appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Expense Type'),
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
+      ),
         floatingActionButton: CircleAvatar(
+            backgroundColor: Colors.green,
+          radius: 30,       
           child: IconButton(
             onPressed: (){
               showDialog(
@@ -61,11 +71,18 @@ final  ExpenseTypeModule _expenseModule= ExpenseTypeModule();
 
                     // dismissDialog
                     return await _dismissDialog(_expenseType);
+                    
                   },
                   key: ValueKey('$index-${_expenseType.name}'),
-                  child: Card(
-                    child: ListTile(
-                      title: Text(_expenseType.name ?? ''),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 50,
+                      child: Card(
+                        child: ListTile(
+                          title: Text(_expenseType.name ?? ''),
+                        ),
+                      ),
                     ),
                   ),
                 );
