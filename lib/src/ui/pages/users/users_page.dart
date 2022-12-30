@@ -17,6 +17,11 @@ UserModule userModule=Get.find<UserModule>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Users'),
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
+      ),
       floatingActionButton: CircleAvatar(
           backgroundColor: Colors.green,
           radius: 30,

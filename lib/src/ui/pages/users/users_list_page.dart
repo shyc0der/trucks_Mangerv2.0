@@ -20,38 +20,41 @@ class UsersListPage extends StatelessWidget {
   bool isDriver = false;
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: SingleChildScrollView(
-        child: StreamBuilder<List<UserModel?>>(
-            stream: _userModule.fetchUsersWhere(isCustomer,isDriver),
-            builder: (context, snapshot) {
-              var user = snapshot.data ?? [];
-              user.sort(
-                (a, b) => a!.userRole.myCompare(b!.userRole),
-              );
-              return Wrap(
-                children: [
-                  for (var us in user)
-                    GestureDetector(
-                      onDoubleTap: () {
-                        Navigator.push(context,MaterialPageRoute(builder: ((context) => 
-                        isCustomer== true ? AddCustomer(customer: us,isEditing: true,) :
-                        AddUserWidget( user: us, isEditing: true))));
-                      },
-                      child: UserWidget(
-                        userType: us!.userRole,
-                        name: us.firstName,
-                        lname: us.lastName,
-                        email: us.email,
-                        phoneNo: us.phoneNo,
-                        onLongPress: us.onLongPress,
-                        onTap: us.onTap,
-                      ),
-                    )
-                ],
-              );
-            }),
+    return Scaffold(
+      
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          child: StreamBuilder<List<UserModel?>>(
+              stream: _userModule.fetchUsersWhere(isCustomer,isDriver),
+              builder: (context, snapshot) {
+                var user = snapshot.data ?? [];
+                user.sort(
+                  (a, b) => a!.userRole.myCompare(b!.userRole),
+                );
+                return Wrap(
+                  children: [
+                    for (var us in user)
+                      GestureDetector(
+                        onDoubleTap: () {
+                          Navigator.push(context,MaterialPageRoute(builder: ((context) => 
+                          isCustomer== true ? AddCustomer(customer: us,isEditing: true,) :
+                          AddUserWidget( user: us, isEditing: true))));
+                        },
+                        child: UserWidget(
+                          userType: us!.userRole,
+                          name: us.firstName,
+                          lname: us.lastName,
+                          email: us.email,
+                          phoneNo: us.phoneNo,
+                          onLongPress: us.onLongPress,
+                          onTap: us.onTap,
+                        ),
+                      )
+                  ],
+                );
+              }),
+        ),
       ),
     );
   }

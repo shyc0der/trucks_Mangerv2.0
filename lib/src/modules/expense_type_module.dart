@@ -7,7 +7,7 @@ class ExpenseTypeModule{
     await  _expenseType.saveOnline(expenseType.asMap());
     return true;
   }
- Stream<List<ExpenseType?>> fetchExpenseType(){
+ Stream<List<ExpenseType>> fetchExpenseType(){
    return _expenseType.fetchStreamsData().map((snapshots) {
     return snapshots.docs.map<ExpenseType>((doc) =>
     ExpenseType.fromMap({'id': doc.id,...doc.data() as Map})

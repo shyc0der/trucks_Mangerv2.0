@@ -16,6 +16,7 @@ import '../../reports/filters_widgets/expense_per_v_filter.dart';
 import '../../reports/filters_widgets/jobs_per_v_filter.dart';
 import '../../reports/filters_widgets/orders_filter.dart';
 import '../reports/jobs_reports.dart';
+import 'others_page.dart';
 import 'reports/reports_drawer_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -152,7 +153,8 @@ class _HomePageState extends State<HomePage>
         // reports page 
         WorkPage(),
         // users page
-        UsersPage(false,false),
+        OthersPage(),
+        
       //if(_userModule.isSuperUser.value)
          ReportsPage(),
       ]),

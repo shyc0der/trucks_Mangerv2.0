@@ -14,7 +14,6 @@ import 'package:trucks_manager/src/modules/trucks_modules.dart';
 import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/pages/expenses/expense_main.dart';
 import 'package:trucks_manager/src/ui/pages/users/customers_page.dart';
-import 'package:trucks_manager/src/ui/pages/expenses/expenses_page.dart';
 import 'package:trucks_manager/src/ui/pages/trucks/trucks_list_page.dart';
 import 'package:trucks_manager/src/ui/pages/users/users_page.dart';
 import 'package:trucks_manager/src/ui/widgets/item_card_widget.dart';
