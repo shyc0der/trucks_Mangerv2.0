@@ -1,8 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:trucks_manager/src/models/expenses_model.dart';
 import 'package:trucks_manager/src/models/order_model.dart';
+import 'package:trucks_manager/src/models/trucks_model.dart';
+import 'package:trucks_manager/src/modules/expenses_modules.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
+import 'package:trucks_manager/src/modules/trucks_modules.dart';
 import 'package:trucks_manager/src/ui/pages/reports/reports_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/item_card_widget.dart';
 
@@ -10,8 +15,14 @@ class ReportsPage extends StatelessWidget {
   ReportsPage({Key? key}) : super(key: key);
 
   final OrderModules _orderModule = Get.put(OrderModules());
+  final ExpenseModule _expenseModule = Get.put(ExpenseModule());
+  final TruckModules _truckModules = Get.put(TruckModules());
+
+  NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
   double jobAmount = 0;
   Map<String?, dynamic> amountsPerOrderTitle = {};
+  Map<String?, dynamic> amountsPerExpenseType = {};
+  Map<String?, dynamic> amountsPerTrucksType = {};
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +55,12 @@ class ReportsPage extends StatelessWidget {
                                 (amount, order) =>
                                     amount + (order.amount ?? 0.0));
 
-                            amountsPerOrderTitle.addAll({'All': totalAmount});
+                            amountsPerOrderTitle
+                                .addAll({'All': totalAmount.ceilToDouble()});
                             var newMap = groupBy(data,
                                 (OrderModel orderModel) => orderModel.title);
-                            print('yyyyyyyyyyyyyyyyyyyyy');
-                            //print(newMap);
+                            //print('yyyyyyyyyyyyyyyyyyyyy');
+                            //print(newMap);j
                             Map<String?, dynamic> groupedAndSum = Map();
                             newMap.forEach((key, value) {
                               var tes = value.fold<double>(
@@ -68,7 +80,7 @@ class ReportsPage extends StatelessWidget {
                               };
                             });
                             //amountsPerOrderTitle = groupedAndSum;
-                            print(amountsPerOrderTitle.keys);
+                            print(amountsPerOrderTitle);
                             //  print(amountsPerOrderTitle.entries.toList());
 
                             //print(groupedAndSum);
@@ -80,10 +92,12 @@ class ReportsPage extends StatelessWidget {
                                 0.0,
                                 (amount, order) =>
                                     amount + (order.amount ?? 0.0));
-                            print(finalData);
+                            //print(finalData);
                             //amountsPerOrderTitle
                             //  .addAll({'Transport': finalData});
                             //print(amountsPerOrderTitle);
+
+                            // future: _expenseModule.fetchByExenpseByOrder(data[].id),
 
                             return ReportsDetailsPage(
                               title: 'Jobs',
@@ -112,86 +126,95 @@ class ReportsPage extends StatelessWidget {
               ),
 
               // expenses
-              ItemCardWidget(
-                label: 'Expenses',
-                iconData: Icons.account_balance_wallet_outlined,
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => ReportsDetailsPage(
-                            title: 'Expenses',
-                            items: [
-                              ReportItemModel(
-                                  label: 'All', amount: 0, expense: 200000),
-                              ReportItemModel(
-                                  label: 'Fuel', amount: 0, expense: 40000),
-                              ReportItemModel(
-                                  label: 'Repair', amount: 0, expense: 180000),
-                              ReportItemModel(
-                                  label: 'Airtime', amount: 0, expense: 30000),
-                            ],
-                          )));
-                },
-              ),
+              StreamBuilder<List<ExpenseModel>>(
+                  stream: _expenseModule.fetchExpenses(),
+                  builder: (context, snapshot) {
+                    return ItemCardWidget(
+                      label: 'Expenses',
+                      iconData: Icons.account_balance_wallet_outlined,
+                      onTap: () {
+                        var data = snapshot.data ?? [];
+                        var totalAmount = data.fold<double>(
+                            0.0,
+                            (amount, expense) =>
+                                amount +
+                                (double.tryParse(expense.totalAmount!) ?? 0.0));
+                        amountsPerExpenseType
+                            .addAll({'All': totalAmount.ceilToDouble()});
+                        var newMap = groupBy(
+                            data,
+                            (ExpenseModel expenseModel) =>
+                                expenseModel.expenseType);
+                        newMap.forEach((key, value) {
+                          var tes = value.fold<double>(
+                              0.0,
+                              (previousValue, expense) =>
+                                  previousValue +
+                                  (double.tryParse(expense.totalAmount!) ??
+                                      0.0));
+                          amountsPerExpenseType.addAll({key: tes});
+                        });
+                        //print(amountsPerExpenseType);
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => ReportsDetailsPage(
+                                  title: 'Expenses',
+                                  items: [
+                                    for (int i = 0;
+                                        i < amountsPerExpenseType.length;
+                                        i++)
+                                      ReportItemModel(
+                                          label: amountsPerExpenseType.keys
+                                              .toList()[i]!,
+                                          expense: amountsPerExpenseType.values
+                                              .toList()[i]!,
+                                          amount: 2000),
+                                  ],
+                                )));
+                      },
+                    );
+                  }),
 
               // trucks
-              ItemCardWidget(
-                label: 'Trucks',
-                iconData: Icons.local_shipping_outlined,
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => ReportsDetailsPage(
-                            title: 'Trucks',
-                            items: [
-                              ReportItemModel(
-                                  label: 'KBZ 001A',
-                                  amount: 800000,
-                                  expense: 200000),
-                              ReportItemModel(
-                                  label: 'KBZ 001B',
-                                  amount: 900000,
-                                  expense: 230000),
-                              ReportItemModel(
-                                  label: 'KBZ 001C',
-                                  amount: 600000,
-                                  expense: 210000),
-                              ReportItemModel(
-                                  label: 'KBZ 001D',
-                                  amount: 500000,
-                                  expense: 180000),
-                              ReportItemModel(
-                                  label: 'KBZ 001E',
-                                  amount: 700000,
-                                  expense: 220000),
-                            ],
-                          )));
-                },
-              ),
+              StreamBuilder<List<TrucksModel>>(
+                  stream: _truckModules.fetchTrucks(),
+                  //expenses per truck
+                  builder: (context, snapshot) {
+                    var data = snapshot.data!;
+                    return ItemCardWidget(
+                      label: 'Trucks',
+                      iconData: Icons.local_shipping_outlined,
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => ReportsDetailsPage(
+                                  title: 'Trucks',
+                                  items: [
+                                    for(int i=0; i < data.length; i++)
+                                    ReportItemModel(
+                                        label: data[i].vehicleRegNo!,
+                                        amount: 800000,
+                                        expense: 0,
+                                        //data[i].getTotalExpense(DateTimeRange(start: DateTime.now().subtract(const Duration(days: 30)), 
+                                      //end: DateTime.now()
+                                      
+                                      //) )
+                                        ),
+                                   
+                                  ],
+                                )));
+                      },
+                    );
+                  }),
 
               // users
               ItemCardWidget(
-                label: 'Users',
+                label: 'Drivers',
                 iconData: Icons.people_alt_outlined,
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => ReportsDetailsPage(
-                            title: 'Users',
+                            title: 'Drivers',
                             items: [
-                              ReportItemModel(
-                                  label: 'User A',
-                                  amount: 200000,
-                                  expense: 60000),
-                              ReportItemModel(
-                                  label: 'User B',
-                                  amount: 200000,
-                                  expense: 60000),
-                              ReportItemModel(
-                                  label: 'User C',
-                                  amount: 300000,
-                                  expense: 60000),
-                              ReportItemModel(
-                                  label: 'User D',
-                                  amount: 400000,
-                                  expense: 70000),
+                             
                             ],
                           )));
                 },

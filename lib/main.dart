@@ -4,6 +4,7 @@ import 'package:trucks_manager/src/models/model.dart';
 import 'package:trucks_manager/src/modules/firebase_user_module.dart';
 import 'package:trucks_manager/src/modules/job_module.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
+import 'package:trucks_manager/src/modules/trucks_modules.dart';
 import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/login_page.dart';
 import 'package:trucks_manager/src/ui/pages/home_page.dart';
@@ -13,7 +14,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Model.initiateDbs();
   Get.put(OrderModules());
+  Get.put(UserModule());
   Get.put(JobModule());
+  Get.put(TruckModules());
   runApp(MyApp());
 }
 

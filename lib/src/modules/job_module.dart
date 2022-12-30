@@ -51,12 +51,38 @@ class JobModule extends GetxController {
   }
   //fetch by order id
    Future<JobModel?> fetchJobsByOrderId(String _orderId)async{
-    final _res = (await jobModel.fetchWhereData('orderId', isEqualTo: _orderId, orderBy: 'dateCreated')).map((documentSnapshot) {
+    final _res = (await jobModel.fetchWhereData('orderId', isEqualTo: _orderId, orderBy: 'dateCreated')).
+    map((documentSnapshot) {
       return JobModel.fromMap({'id': documentSnapshot.id, ...documentSnapshot.data()});
     }).toList();
     return _res.isNotEmpty ? _res.first : null;
   }
-  
+  //fetch jobs by user and state
+    Stream<List<JobModel>> fetchJobsByState(String state,UserModel user ) {
+ if(user.userRole == UserWidgetType.admin || user.userRole == UserWidgetType.manager){
+      return jobModel.fetchStreamsData(orderBy: 'dateCreated').map<List<JobModel>>((snapshot) {
+        var _jobs = snapshot.docs.map<JobModel>((doc) {
+
+        return JobModel.fromMap({'id': doc.id, ...doc.data() as Map});}
+        ).where((element) => element.state == state)
+        .toList();
+       
+        return _jobs;   
+                
+      });
+    }
+  else{
+      return jobModel.fetchStreamsDataWhere('driverId',  isEqualTo: user.id, orderBy: 'dateCreated').map<List<JobModel>>((snapshot) {
+        var _jobs = snapshot.docs.map<JobModel>((doc) => 
+        JobModel.fromMap({'id': doc.id, ...doc.data() as Map}))
+        .where((element) => element.state == state)
+        .toList();   
+            
+        return _jobs;            
+      });
+    }
+   }
+ 
 //fetch Jobs
   Stream<List<JobModel>> fetchJobs(UserModel user) {
  if(user.userRole == UserWidgetType.admin || user.userRole == UserWidgetType.manager){
@@ -108,7 +134,8 @@ class JobModule extends GetxController {
   }
     //fetch by vehicle id
    Future<List<JobModel>> fetchJobsByVehicleId(String _vid)async{
-    return (await jobModel.fetchWhereData('vehicleId', isEqualTo: _vid, orderBy: 'dateCreated')).map((documentSnapshot) {
+    return (await jobModel.fetchWhereData('vehicleId', isEqualTo: _vid, orderBy: 'dateCreated')).
+      map((documentSnapshot) {
       return JobModel.fromMap({'id': documentSnapshot.id, ...documentSnapshot.data()});
     }).toList();
   }

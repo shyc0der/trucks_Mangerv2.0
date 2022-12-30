@@ -12,14 +12,15 @@ import 'package:trucks_manager/src/modules/job_module.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
 import 'package:trucks_manager/src/modules/trucks_modules.dart';
 import 'package:trucks_manager/src/modules/user_modules.dart';
+import 'package:trucks_manager/src/ui/pages/expenses/expense_main.dart';
 import 'package:trucks_manager/src/ui/pages/users/customers_page.dart';
 import 'package:trucks_manager/src/ui/pages/expenses/expenses_page.dart';
-import 'package:trucks_manager/src/ui/pages/orders/orders_page.dart';
 import 'package:trucks_manager/src/ui/pages/trucks/trucks_list_page.dart';
 import 'package:trucks_manager/src/ui/pages/users/users_page.dart';
 import 'package:trucks_manager/src/ui/widgets/item_card_widget.dart';
 
-import 'jobs/jobs_page.dart';
+import 'jobs/jobs_main_page.dart';
+import 'orders/orders_main_page.dart';
 
 class WorkPage extends StatelessWidget {
   WorkPage({Key? key}) : super(key: key);
@@ -51,7 +52,7 @@ class WorkPage extends StatelessWidget {
                       count: snapshot.data!.length,
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => const OrdersPage()));
+                            builder: (_) => const OrdersMainPage()));
                       },
                     );
                   }
@@ -71,10 +72,10 @@ class WorkPage extends StatelessWidget {
                     return ItemCardWidget(
                       label: 'Jobs',
                       iconData: Icons.work_outline,
-                      count:  snapshot.data!.length,
+                      count: snapshot.data!.length,
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => const JobsPage()));
+                            builder: (_) => const JobsMainPage()));
                       },
                     );
                   } else {
@@ -90,6 +91,7 @@ class WorkPage extends StatelessWidget {
                     .fetchAllExpenses(_userModule.currentUser.value),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
+                    print(snapshot.error);
                     return Text('Error = ${snapshot.error}');
                   }
                   if (snapshot.hasData) {
@@ -99,7 +101,7 @@ class WorkPage extends StatelessWidget {
                       count: snapshot.data!.length,
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => const ExpensesPage()));
+                            builder: (_) => const ExpensesMainPage()));
                       },
                     );
                   } else {
@@ -117,18 +119,18 @@ class WorkPage extends StatelessWidget {
                     return Text('Error = ${snapshot.error}');
                   }
                   if (snapshot.hasData) {
-                  return ItemCardWidget(
-                    label: 'Trucks',
-                    iconData: Icons.local_shipping_outlined,
-                    count:  snapshot.data!.length,
-                    onTap: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (_) {
-                            return TrucksListPage();
-                          });
-                    },
-                  );
+                    return ItemCardWidget(
+                      label: 'Trucks',
+                      iconData: Icons.local_shipping_outlined,
+                      count: snapshot.data!.length,
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (_) {
+                              return TrucksListPage();
+                            });
+                      },
+                    );
                   } else {
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -138,21 +140,21 @@ class WorkPage extends StatelessWidget {
 
             // customers
             StreamBuilder<List<UserModel>>(
-                stream: _userModule.fetchUsersWhere(true,false),
+                stream: _userModule.fetchUsersWhere(true, false),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Text('Error = ${snapshot.error}');
                   }
                   if (snapshot.hasData) {
-                  return ItemCardWidget(
-                    label: 'Customers',
-                    count: snapshot.data!.length,
-                    iconData: Icons.people_alt_outlined,
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => const CustomersPage()));
-                    },
-                  );
+                    return ItemCardWidget(
+                      label: 'Customers',
+                      count: snapshot.data!.length,
+                      iconData: Icons.people_alt_outlined,
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => const CustomersPage()));
+                      },
+                    );
                   } else {
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -160,22 +162,22 @@ class WorkPage extends StatelessWidget {
                   }
                 }),
 //drivers
-       StreamBuilder<List<UserModel>>(
-                stream: _userModule.fetchUsersWhere(false,true),
+            StreamBuilder<List<UserModel>>(
+                stream: _userModule.fetchUsersWhere(false, true),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Text('Error = ${snapshot.error}');
                   }
                   if (snapshot.hasData) {
-                  return ItemCardWidget(
-                    label: 'Drivers',
-                    count: snapshot.data!.length,
-                    iconData: Icons.people_alt_outlined,
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => UsersPage(false,true)));
-                    },
-                  );
+                    return ItemCardWidget(
+                      label: 'Drivers',
+                      count: snapshot.data!.length,
+                      iconData: Icons.people_alt_outlined,
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => UsersPage(false, true)));
+                      },
+                    );
                   } else {
                     return const Center(
                       child: CircularProgressIndicator(),

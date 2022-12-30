@@ -13,6 +13,7 @@ import 'package:trucks_manager/src/modules/trucks_modules.dart';
 import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/pages/expenses/add_expense_widget.dart';
 import 'package:trucks_manager/src/ui/pages/expenses/expense_details_page.dart';
+import 'package:trucks_manager/src/ui/widgets/constants.dart';
 import 'package:trucks_manager/src/ui/widgets/order_items_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/update_state_widget.dart';
 
@@ -39,6 +40,7 @@ class JobDetailPageState extends State<JobDetailPage>
   final JobModule _jobModule = JobModule();
   UserModule userModule = Get.find<UserModule>();
   NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
+  Constants constants = Constants();
 
   String _jobState = '';
   final ExpenseModule _expenseModule = ExpenseModule();
@@ -70,7 +72,6 @@ class JobDetailPageState extends State<JobDetailPage>
         title: const Text('Jobs Details'),
       ),
       body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
         child: Column(
           children: [
             //ADD EXPENSE
@@ -125,8 +126,6 @@ class JobDetailPageState extends State<JobDetailPage>
                         onClose: () async {
                           if (expenses.isNotEmpty) {
                             for (var element in expenses) {
-                            
-
                               if (!element.state!.contains('Closed')) {
                                 setState(() {
                                   isExpenseState = true;
@@ -214,9 +213,12 @@ class JobDetailPageState extends State<JobDetailPage>
                     );
                   }),
 
-            if (widget.job.jobStates != OrderWidgateState.Pending)
-              SizedBox(
+          //  if (widget.job.jobStates != OrderWidgateState.Pending)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: SingleChildScrollView(
+                 physics:const  NeverScrollableScrollPhysics(),
+                 scrollDirection: Axis.vertical,
                     child: StreamBuilder<List<ExpenseModel>>(
                         stream: _expenseModule.fetchByJobExpenses(
                             widget.job.id!, userModule.currentUser.value),
@@ -273,7 +275,9 @@ class JobDetailPageState extends State<JobDetailPage>
                                 },
                                 child: ExpensesListTile(
                                   title: _expenses[index].expenseType ?? '',
-                                  driverName: _expenses[index].userId ?? '',
+                                  truckNumber:
+                    constants.truckNumber(_expenses[index].truckId ?? ''),
+                  driverName: constants.driverName(_expenses[index].userId ?? ''),
                                   dateTime: _expenses[index].date,
                                   amount: doubleFormat.format(double.tryParse(
                                       _expenses[index].totalAmount ?? '0')),

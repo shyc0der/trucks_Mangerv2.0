@@ -4,6 +4,7 @@ import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
 class JobListTile extends StatelessWidget {
   const JobListTile(
       {required this.title,
+      required this.orderNo,
       required this.dateTime,
       required this.amount,
       this.onTap,
@@ -11,6 +12,7 @@ class JobListTile extends StatelessWidget {
       Key? key})
       : super(key: key);
   final String title;
+  final String orderNo;
   final DateTime dateTime;
   final String amount;
   final OrderWidgateState jobState;
@@ -25,7 +27,13 @@ class JobListTile extends StatelessWidget {
           width: 6,
           color: jobState.color,
         ),
-        title: Text(title),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title),
+            Text(orderNo),
+          ],
+        ),
         subtitle: Text(dateTime.toString().substring(0, 16)),
         trailing:
             Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [

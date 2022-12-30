@@ -65,6 +65,36 @@ class OrderModules extends GetxController {
         .map((doc) => OrderModel.from({'id': doc.id, ...doc.data() as Map}));
   }
 
+  //FETCH ORDER BY STATE
+  Stream<List<OrderModel>> fetchOrderByState(String state, UserModel user) {
+   if (user.userRole == UserWidgetType.admin ||
+        user.userRole == UserWidgetType.manager) {
+      return _orderModel
+          .fetchStreamsData(orderBy: 'dateCreated')
+          .map<List<OrderModel>>((snapshot) {
+        return snapshot.docs.map<OrderModel>((doc) =>
+          OrderModel.from({'id': doc.id,... doc.data() as Map, })).
+          where((element) => element.state == state)
+        .toList();
+        });
+
+       
+    } else {
+      return _orderModel
+          .fetchStreamsDataWhere('userId',
+              isEqualTo: user.id, orderBy: 'dateCreated')
+          .map<List<OrderModel>>((snapshot) {
+        return snapshot.docs
+            .map<OrderModel>(
+                (e) => OrderModel.from({'id': e.id, ...e.data() as Map})).
+                where((element) => element.state == state)
+            .toList();
+
+        
+      });
+    }
+  }
+
   Future<OrderModel> fetchFutureOrderById(String orderId) async {
     var orders = await _orderModel.fetchDataById(orderId);
 
@@ -173,11 +203,10 @@ class OrderModules extends GetxController {
     return _orderModel
         .fetchStreamsData(orderBy: 'dateCreated')
         .map<List<OrderModel>>((snapshot) {
-        var _orders = snapshot.docs.map<OrderModel>((doc) {
+      var _orders = snapshot.docs.map<OrderModel>((doc) {
         return OrderModel.from({...(doc.data() as Map), 'id': doc.id});
-        
       }).toList();
-      
+
       orders.clear();
       orders.addAll(_orders);
       return _orders;

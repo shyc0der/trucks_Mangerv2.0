@@ -15,7 +15,7 @@ class ItemCardWidget extends StatelessWidget {
       onLongPress: onLongPress,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(8),
           color: Theme.of(context).backgroundColor,
           boxShadow: [
             BoxShadow(
@@ -27,7 +27,7 @@ class ItemCardWidget extends StatelessWidget {
           ]          
         ),
         
-        margin: const EdgeInsets.all(11),
+        margin: const EdgeInsets.all(8),
         child: Container(
           width: 150,
           height: 120,
@@ -55,7 +55,7 @@ class ItemCardWidget extends StatelessWidget {
                 ),
               ),
               if(count == null)
-              const SizedBox(height: 19,),
+              const SizedBox(height: 15,),
     
               // Icon
               Center(
@@ -64,7 +64,7 @@ class ItemCardWidget extends StatelessWidget {
               // label
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 7.0),
+                  padding: const EdgeInsets.only(top: 5.0),
                   child: Text(label, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, letterSpacing: 1),),
                 ),
               ),

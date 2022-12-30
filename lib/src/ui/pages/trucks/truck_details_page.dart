@@ -9,6 +9,7 @@ import 'package:trucks_manager/src/modules/expenses_modules.dart';
 import 'package:trucks_manager/src/modules/job_module.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
 import 'package:trucks_manager/src/ui/pages/jobs/jobs_details_page.dart';
+import 'package:trucks_manager/src/ui/widgets/constants.dart';
 import 'package:trucks_manager/src/ui/widgets/expenses_list_tile_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/job_list_tile_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/truck_widget.dart';
@@ -31,6 +32,8 @@ class _TruckDetailsPageState extends State<TruckDetailsPage>
   late final TabController _tabController;
   final OrderModules _orderModules = OrderModules();
   NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
+  Constants constants = Constants();
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +45,7 @@ class _TruckDetailsPageState extends State<TruckDetailsPage>
 
   Future<double> getTotalJobAmount(String truckId) async {
     double amounts = 0;
-     var trucks = await _orderModules.fetchOrderByTruckId(truckId);
+    var trucks = await _orderModules.fetchOrderByTruckId(truckId);
     for (var truck in trucks) {
       amounts += truck.amount ?? 0;
     }
@@ -72,7 +75,8 @@ class _TruckDetailsPageState extends State<TruckDetailsPage>
                 return TruckWidget(
                     registration: widget.trucksModel!.vehicleRegNo ?? '',
                     //TO:DO CALCULATE AMOUNTS PER VEHICLE
-                    jobsAmount: doubleFormat.format( (snapshot.data ?? 0).ceilToDouble()),
+                    jobsAmount: doubleFormat
+                        .format((snapshot.data ?? 0).ceilToDouble()),
                     expensesAmount: 'Ksh. 50,000',
                     addExpense: () async {
                       await showDialog(
@@ -119,22 +123,17 @@ class _TruckDetailsPageState extends State<TruckDetailsPage>
 class _ListOfJobs extends StatelessWidget {
   _ListOfJobs(this.jobId, {Key? key}) : super(key: key);
   String? jobId;
-  
-  final OrderModules _orderModules =Get.find<OrderModules>();
+
+  final OrderModules _orderModules = Get.find<OrderModules>();
 
   double? fetchAmount(String? orderId) {
     var res = _orderModules.getOrderByJobId(orderId!);
 
-    return res?.amount ;
-  }
-  
-  String? fetchOrder(String? orderId) {
-    var res = _orderModules.getOrderByJobId(orderId!);
-    
-    return res?.title;
+    return res?.amount;
   }
 
   final JobModule _jobModule = JobModule();
+   Constants constants = Constants();
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<JobModel>>(
@@ -150,9 +149,12 @@ class _ListOfJobs extends StatelessWidget {
               itemCount: (snapshot.data ?? []).length,
               itemBuilder: (_, index) {
                 return JobListTile(
-                  title: fetchOrder(snapshot.data![index].orderId) ?? '',
+                  title:
+                      constants.fetchOrder(snapshot.data![index].orderId) ?? '',
+                  orderNo: snapshot.data![index].orderNo ?? '',
                   dateTime: snapshot.data![index].dateCreated,
-                  amount: ((fetchAmount(snapshot.data![index].orderId) ?? 0).toString()),
+                  amount: ((fetchAmount(snapshot.data![index].orderId) ?? 0)
+                      .toString()),
                   jobState: snapshot.data![index].jobStates,
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -173,13 +175,14 @@ class _ListOfExpenses extends StatelessWidget {
   _ListOfExpenses(this.truckId, {Key? key}) : super(key: key);
   String? truckId;
   final ExpenseModule _expenseModule = ExpenseModule();
-   UserModule userModule=Get.find<UserModule>();
-   NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
-
+  UserModule userModule = Get.find<UserModule>();
+  NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
+  Constants constants = Constants();
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<ExpenseModel>>(
-        stream: _expenseModule.fetchByTruckExpenses(truckId!,userModule.currentUser.value),
+        stream: _expenseModule.fetchByTruckExpenses(
+            truckId!, userModule.currentUser.value),
         builder: (context, snapshot) {
           List<ExpenseModel> _expenses = snapshot.data ?? [];
           return ListView.builder(
@@ -187,15 +190,17 @@ class _ListOfExpenses extends StatelessWidget {
             itemBuilder: (_, index) {
               return ExpensesListTile(
                 title: _expenses[index].expenseType ?? '',
-                driverName: _expenses[index].userId ?? '',
+                truckNumber:
+                    constants.truckNumber(_expenses[index].truckId ?? ''),
+                driverName: constants.driverName(_expenses[index].userId ?? ''),
                 dateTime: _expenses[index].date,
-                amount:
-                    doubleFormat.format(double.tryParse(_expenses[index].totalAmount ?? '0')) ,
+                amount: doubleFormat.format(
+                    double.tryParse(_expenses[index].totalAmount ?? '0')),
                 expenseState: _expenses[index].expensesState,
-                 onTap:() {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => ExpenseDetailsPage(_expenses[index])));
-            },
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => ExpenseDetailsPage(_expenses[index])));
+                },
               );
             },
           );

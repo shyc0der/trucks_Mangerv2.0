@@ -10,69 +10,63 @@ import '../../../models/order_model.dart';
 import 'add_order_widget.dart';
 
 class OrdersPage extends StatefulWidget {
-  const OrdersPage({Key? key}) : super(key: key);
-
+  OrdersPage(this.state, {Key? key}) : super(key: key);
+  String state;
   @override
   State<OrdersPage> createState() => _OrdersPageState();
 }
 
 class _OrdersPageState extends State<OrdersPage> {
-  late Stream<List<OrderModel>> orders;
-  late List<OrderModel> displayOrders = [];
+ // late Stream<List<OrderModel>> orders;
+  // late List<OrderModel> displayOrders = [];
   late List<OrderModel> displayOrder;
   final OrderModules _orderModules = OrderModules();
   final UserModule _userModule = Get.find<UserModule>();
-   NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
+  NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
 
-  void _changeView(int val) {
-    switch (val) {
-      case 1:
-        setState(() {
-          displayOrders = displayOrder
-              .where(
-                  (element) => element.orderStates == OrderWidgateState.Approved)
-              .toList();
-        });
-        break;
-      case 2:
-        setState(() {
-          displayOrders = displayOrder
-              .where((element) => element.orderStates == OrderWidgateState.Pending)
-              .toList();
-        });
-        break;
-      case 3:
-        setState(() {
-          displayOrders = displayOrder
-              .where((element) => element.orderStates == OrderWidgateState.Open)
-              .toList();
-        });
-        break;
-      case 4:
-        setState(() {
-          displayOrders = displayOrder
-              .where(
-                  (element) => element.orderStates == OrderWidgateState.Closed)
-              .toList();
-        });
-        break;
-      default:
-        setState(() {
-          displayOrders = displayOrder;
-        });
-    }
-  }
+  // void _changeView(int val) {
+  //   switch (val) {
+  //     case 1:
+  //       setState(() {
+  //         displayOrders = displayOrder
+  //             .where(
+  //                 (element) => element.orderStates == OrderWidgateState.Approved)
+  //             .toList();
+  //       });
+  //       break;
+  //     case 2:
+  //       setState(() {
+  //         displayOrders = displayOrder
+  //             .where((element) => element.orderStates == OrderWidgateState.Pending)
+  //             .toList();
+  //       });
+  //       break;
+  //     case 3:
+  //       setState(() {
+  //         displayOrders = displayOrder
+  //             .where((element) => element.orderStates == OrderWidgateState.Open)
+  //             .toList();
+  //       });
+  //       break;
+  //     case 4:
+  //       setState(() {
+  //         displayOrders = displayOrder
+  //             .where(
+  //                 (element) => element.orderStates == OrderWidgateState.Closed)
+  //             .toList();
+  //       });
+  //       break;
+  //     default:
+  //       setState(() {
+  //         displayOrders = displayOrder;
+  //       });
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
-    orders = _orderModules.fetchOrders(_userModule.currentUser.value);
-    orders.forEach((element) {
-      setState(() {
-        displayOrder = element;
-        displayOrders = displayOrder;
-      });
-    });
+    
   }
 
   @override
@@ -101,39 +95,59 @@ class _OrdersPageState extends State<OrdersPage> {
             IconButton(onPressed: () {}, icon: const Icon(Icons.search))
           ],
         ),
-        body: ListView.builder(
-          itemCount: displayOrders.length,
-          itemBuilder: (_, index) {
-            return JobListTile(
-              title: displayOrders[index].title ?? '',
-              dateTime: displayOrders[index].dateCreated,
-              amount: doubleFormat.format((displayOrders[index].amount ?? 0).ceilToDouble()),
-              jobState: displayOrders[index].orderStates,
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => OrderDetailPage(displayOrders[index])));
-              },
-            );
-          },
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          onTap: _changeView,
-          currentIndex: 0,
-          items: const [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.list_outlined), label: 'All'),
-           BottomNavigationBarItem(
-                icon: Icon(Icons.pending_outlined), label: 'Approved'),           
-          BottomNavigationBarItem(
-                icon: Icon(Icons.pending_outlined), label: 'Pending'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.outbox_outlined), label: 'Open'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.done_all_outlined), label: 'Closed'),
-          ],
-        ),
+        body: StreamBuilder<List<OrderModel>>(
+            stream: _orderModules.fetchOrderByState(widget.state,_userModule.currentUser.value),
+            builder: (context, snapshot) {
+            
+                if (snapshot.hasError) {
+                            return Text('Error = ${snapshot.error}');
+                          }
+                          if (snapshot.hasData) {
+                              var displayOrders = snapshot.data!;
+              return ListView.builder(
+                itemCount: displayOrders.length,
+                itemBuilder: (_, index) {
+                  return JobListTile(
+                    title: displayOrders[index].title ?? '',
+                    orderNo: displayOrders[index].orderNo ?? '',
+                    dateTime: displayOrders[index].dateCreated,
+                    amount: doubleFormat.format(
+                        (displayOrders[index].amount ?? 0).ceilToDouble()),
+                    jobState: displayOrders[index].orderStates,
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) =>
+                              OrderDetailPage(displayOrders[index])));
+                    },
+                  );
+                },
+              );
+              }
+                  else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+            }),
       );
+      //   bottomNavigationBar: BottomNavigationBar(
+      //     type: BottomNavigationBarType.fixed,
+      //     onTap: _changeView,
+      //     currentIndex: 0,
+      //     items: const [
+      //       BottomNavigationBarItem(
+      //           icon: Icon(Icons.list_outlined), label: 'All'),
+      //       BottomNavigationBarItem(
+      //           icon: Icon(Icons.pending_outlined), label: 'Approved'),
+      //       BottomNavigationBarItem(
+      //           icon: Icon(Icons.pending_outlined), label: 'Pending'),
+      //       BottomNavigationBarItem(
+      //           icon: Icon(Icons.outbox_outlined), label: 'Open'),
+      //       BottomNavigationBarItem(
+      //           icon: Icon(Icons.done_all_outlined), label: 'Closed'),
+      //     ],
+      //   ),
+      // );
     });
   }
 }

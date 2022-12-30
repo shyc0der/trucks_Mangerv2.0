@@ -11,13 +11,22 @@ class TruckModules extends GetxController {
 
   Stream<List<TrucksModel>> fetchTrucks() {
     return _trucksModel.fetchStreamsData().map<List<TrucksModel>>((streams) {
-      return streams.docs
+      var _trucks= streams.docs
           .map<TrucksModel>((doc) =>
               TrucksModel.fromMap({'id': doc.id, ...doc.data() as Map}))
           .toList();
+             trucks.clear();
+      trucks.addAll(_trucks);
+      return _trucks;
     });
   }
 
+TrucksModel? getTruckById(String ? truckId){
+   final _trucks = trucks.where((truck) => truck.id == truckId).toList();
+    if (_trucks.isNotEmpty) {
+      return _trucks.first;
+    }
+}
   //list of jobs per vehicle
   Stream<TrucksModel> fetchJobsPerTruck(String id) {
     //fetch job and then get vehicleid

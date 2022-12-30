@@ -279,7 +279,7 @@ class _AddUserWidgetState extends State<AddUserWidget> {
                 children: [
                   const Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: SizedBox(width: 80, child: Text('Receipt Image:')),
+                    child: SizedBox(width: 80, child: Text('ID Number Image:')),
                   ),
 
                   // image

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
 class ExpensesListTile extends StatelessWidget {
-  const ExpensesListTile({required this.title, required this.driverName, required this.dateTime, required this.amount, this.onTap, required this.expenseState, Key? key}) : super(key: key);
+  const ExpensesListTile({required this.title, required this.driverName,required this.truckNumber, required this.dateTime, required this.amount, this.onTap, required this.expenseState, Key? key}) : super(key: key);
   final String title;
   final String driverName;
+  final String truckNumber;
   final DateTime dateTime;
   final String amount;
   final OrderWidgateState expenseState;
@@ -13,6 +14,7 @@ class ExpensesListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        contentPadding: const EdgeInsets.only(top:4.0,bottom: 4.0),
         isThreeLine: true,
         onTap: onTap,
         leading: Container(
@@ -23,17 +25,22 @@ class ExpensesListTile extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(driverName),
+            
+            Text(truckNumber),
+            Text(driverName),            
             Text(dateTime.toString().substring(0, 16))
           ],
         ),
-        trailing: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-          Text(expenseState.value,style: TextStyle(color: expenseState.color,fontWeight: FontWeight.bold,fontSize: 14.5), ),
-          const SizedBox(height:15),
-          Text('Ksh. $amount'),
-        ]),
+        trailing: Padding(
+          padding: const EdgeInsets.only(right: 7.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+            Text(expenseState.value,style: TextStyle(color: expenseState.color,fontWeight: FontWeight.bold,fontSize: 14.5), ),
+            const SizedBox(height:15),
+            Text('Ksh. $amount'),
+          ]),
+        ),
       ),
     );
   }

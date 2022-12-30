@@ -15,11 +15,21 @@ class UserModule extends GetxController {
   RxList<UserModel> users = <UserModel>[].obs;
   RxBool isSuperUser = false.obs;
   RxBool isSuperCustomer = false.obs;
-   String folder = "idNo";
+  String folder = "idNo";
 
   Future<UserModel> getUserById(String userId) async {
     final userMap = await userModel.fetchDataById(userId);
     return UserModel.fromMap({'id': userMap.id, ...(userMap.data() ?? {})});
+  }
+
+  UserModel? getStreamUserById(String? userId) {
+    final _users = users.where((user) => user.id == userId).toList();
+print('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
+    print(_users.asMap());
+    print(users.asMap());
+    if (_users.isNotEmpty) {
+      return _users.first;
+    }
   }
 
   Future<void> setCurrentUser(String userId) async {
@@ -32,54 +42,69 @@ class UserModule extends GetxController {
 
   Stream<List<UserModel>> fetchUsers() {
     return userModel.fetchStreamsData().map<List<UserModel>>((streams) {
-      return streams.docs
+      var _users = streams.docs
           .map<UserModel>(
               (doc) => UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
           .toList();
+      users.clear();
+      users.addAll(_users);
+      return _users;
     });
   }
 
   bool isCustomer = false;
-  Stream<List<UserModel>> fetchUsersWhere(isCustomer,isDriver) {
+  Stream<List<UserModel>> fetchUsersWhere(isCustomer, isDriver) {
     if (isCustomer == true) {
       return userModel
           .fetchStreamsDataWhere('role', isEqualTo: 'customer')
           .map<List<UserModel>>((streams) {
-        return streams.docs
+        var _users= streams.docs
             .map<UserModel>((doc) =>
                 UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
             .toList();
+      users.clear();
+      users.addAll(_users);
+      return _users;
       });
     }
-    if(isDriver == true){
-       return userModel
+    if (isDriver == true) {
+      return userModel
           .fetchStreamsDataWhere('role', isEqualTo: 'driver')
           .map<List<UserModel>>((streams) {
-        return streams.docs
+        var _users= streams.docs
             .map<UserModel>((doc) =>
                 UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
             .toList();
+            users.clear();
+      users.addAll(_users);
+      return _users;
       });
     }
     return userModel
         .fetchStreamsDataWhere('role', isNotEqualTo: 'customer')
         .map<List<UserModel>>((streams) {
-      return streams.docs
+      var _users= streams.docs
           .map<UserModel>(
               (doc) => UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
           .toList();
+           users.clear();
+      users.addAll(_users);
+      return _users;
     });
   }
-    Stream<List<UserModel>> fetchDrivers() {
-          return userModel
-          .fetchStreamsDataWhere('role', isEqualTo: 'driver')
-          .map<List<UserModel>>((streams) {
-        return streams.docs
-            .map<UserModel>((doc) =>
-                UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
-            .toList();
-      });
 
+  Stream<List<UserModel>> fetchDrivers() {
+    return userModel
+        .fetchStreamsDataWhere('role', isEqualTo: 'driver')
+        .map<List<UserModel>>((streams) {
+      var _users= streams.docs
+          .map<UserModel>(
+              (doc) => UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
+          .toList();
+           users.clear();
+      users.addAll(_users);
+      return _users;
+    });
   }
 
   Future<List<UserModel>> fetchListUsers() async {
@@ -102,7 +127,7 @@ class UserModule extends GetxController {
   //fetch users Name
   Future<Map<String, dynamic>> fetchUsersName() async {
     final Map<String, dynamic> _map = {};
-    final _users = await userModel.fetchWhereData("role" ,isEqualTo: 'driver');
+    final _users = await userModel.fetchWhereData("role", isEqualTo: 'driver');
 
     for (var user in _users) {
       _map.addAll({user.id: user.data()});
@@ -136,11 +161,13 @@ class UserModule extends GetxController {
   }
 
   // add user
-  Future<ResponseModel> addUser(UserModel user, XFile? image,
-      ) async {
+  Future<ResponseModel> addUser(
+    UserModel user,
+    XFile? image,
+  ) async {
     // save firebase user
     String? imagePath;
-   
+
     if (image != null) {
       imagePath = await uploadPics(image, folder);
       user.receiptPath = imagePath;

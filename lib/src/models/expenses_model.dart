@@ -3,7 +3,8 @@ import 'model.dart';
 
 class ExpenseModel extends Model {
   ExpenseModel(
-      {this.id,
+      {
+      this.id ,
       this.jobId,
       this.truckId,
       this.totalAmount,
@@ -20,7 +21,9 @@ class ExpenseModel extends Model {
       : super('expenses') {
     state = expenseState?.value ?? 'Pending';
     this.date = date ?? DateTime.now();
+    
   }
+  //'Ex ${(DateTime.now().millisecondsSinceEpoch/1000).floor().toRadixString(16)}';
 
   OrderWidgateState get expensesState => orderWidgateState(state ?? 'Pending');
 

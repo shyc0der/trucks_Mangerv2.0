@@ -1,6 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:trucks_manager/src/models/model.dart';
+import 'package:trucks_manager/src/modules/expenses_modules.dart';
+
+import 'expenses_model.dart';
 
 class TrucksModel extends Model {
+  final ExpenseModule _expenseModule = ExpenseModule();
   TrucksModel({
     this.id,
     this.tankCapity,
@@ -29,6 +34,23 @@ class TrucksModel extends Model {
     isActive = map['isActive'] ?? true;
     isDeleted = map['isDeleted'] ?? false;
   }
+
+  Stream<List<ExpenseModel>> fetchExpenseByTruck(DateTimeRange dateTimeRange) {
+    var expenses =
+        _expenseModule.fetchExpenseByTruckAndDate(id!, dateTimeRange);
+    return expenses;
+  }
+
+  Stream<double> getTotalExpense(DateTimeRange dateTimeRange) {
+    var expenses = fetchExpenseByTruck(dateTimeRange).map((e) {
+      return e.fold<double>(
+          0.0,
+          (previousValue, element) =>
+              previousValue + (double.tryParse(element.totalAmount!) ?? 0.0));
+    });
+    return expenses;
+  }
+
   Map<String, dynamic> asMap() {
     return {
       'vehicleRegNo': vehicleRegNo,
