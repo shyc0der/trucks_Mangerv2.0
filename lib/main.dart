@@ -17,6 +17,7 @@ void main() async {
   Get.put(UserModule());
   Get.put(JobModule());
   Get.put(TruckModules());
+
   runApp(MyApp());
 }
 
@@ -39,15 +40,13 @@ class MyApp extends StatelessWidget {
             default:
               if (snapshot.data != null) {
                 userModule.setCurrentUser(snapshot.data!.uid.toString());
-                
+                print(userModule.currentUser.value.firstName);
+                 print(snapshot.data!.uid.toString());
+                return GetMaterialApp(theme: themeData, home: const HomePage());
+              } else {
+                return GetMaterialApp(
+                    theme: themeData, home: const LoginPage());
               }
-
-              return GetMaterialApp(
-                  theme: themeData,
-                   home:
-                  snapshot.data == null
-                      ? const LoginPage() :
-                       const HomePage());
           }
         });
   }

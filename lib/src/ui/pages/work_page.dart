@@ -21,14 +21,27 @@ import 'package:trucks_manager/src/ui/widgets/item_card_widget.dart';
 import 'jobs/jobs_main_page.dart';
 import 'orders/orders_main_page.dart';
 
-class WorkPage extends StatelessWidget {
-  WorkPage({Key? key}) : super(key: key);
+class WorkPage extends StatefulWidget {
+  const WorkPage({super.key});
 
+  @override
+  State<WorkPage> createState() => _WorkPageState();
+}
+
+class _WorkPageState extends State<WorkPage> {
   final OrderModules _orderModules = Get.find<OrderModules>();
   final JobModule _jobModule = Get.find<JobModule>();
   final ExpenseModule _expenseModule = Get.put(ExpenseModule());
   final TruckModules _truckModules = Get.put(TruckModules());
-  final UserModule _userModule = Get.find<UserModule>();
+  final UserModule _userModule = Get.put(UserModule());
+  @override
+  void initState() {
+    super.initState();
+    _orderModules.init(_userModule.currentUser.value);
+    _jobModule.init(_userModule.currentUser.value);
+    _truckModules.init();
+    _expenseModule.init(_userModule.currentUser.value);
+  }
 
   @override
   Widget build(BuildContext context) {

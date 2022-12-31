@@ -9,24 +9,30 @@ class TruckModules extends GetxController {
   final TrucksModel _trucksModel = TrucksModel();
   RxList<TrucksModel> trucks = <TrucksModel>[].obs;
 
+  void init() {
+    // fetch jobs, drivers & truck
+    fetchTrucks();
+  }
+
   Stream<List<TrucksModel>> fetchTrucks() {
     return _trucksModel.fetchStreamsData().map<List<TrucksModel>>((streams) {
-      var _trucks= streams.docs
+      var _trucks = streams.docs
           .map<TrucksModel>((doc) =>
               TrucksModel.fromMap({'id': doc.id, ...doc.data() as Map}))
           .toList();
-             trucks.clear();
+      trucks.clear();
       trucks.addAll(_trucks);
       return _trucks;
     });
   }
 
-TrucksModel? getTruckById(String ? truckId){
-   final _trucks = trucks.where((truck) => truck.id == truckId).toList();
+  TrucksModel? getTruckById(String? truckId) {
+    final _trucks = trucks.where((truck) => truck.id == truckId).toList();
     if (_trucks.isNotEmpty) {
       return _trucks.first;
     }
-}
+  }
+
   //list of jobs per vehicle
   Stream<TrucksModel> fetchJobsPerTruck(String id) {
     //fetch job and then get vehicleid
@@ -50,25 +56,24 @@ TrucksModel? getTruckById(String ? truckId){
 
     return _map;
   }
-  Future<TrucksModel> fetchTruckById(String truckId)async{
+
+  Future<TrucksModel> fetchTruckById(String truckId) async {
     final _docSnapshot = await _trucksModel.fetchDataById(truckId);
-    return TrucksModel.fromMap({'id': _docSnapshot.id, ...(_docSnapshot.data() ?? {})});
-
+    return TrucksModel.fromMap(
+        {'id': _docSnapshot.id, ...(_docSnapshot.data() ?? {})});
   }
-   Future<bool>addTruck(TrucksModel truckModel)async{
+
+  Future<bool> addTruck(TrucksModel truckModel) async {
     await _trucksModel.saveOnline(truckModel.asMap());
-    
-    return true;
 
+    return true;
   }
- 
- // update truck
-  Future<ResponseModel> updateTruck(String id, Map<String, dynamic> map)async{
-    
+
+  // update truck
+  Future<ResponseModel> updateTruck(String id, Map<String, dynamic> map) async {
     await _trucksModel.updateOnline(id, map);
     return ResponseModel(ResponseType.success, 'Truck updated');
   }
 }
-    //list of jobs per expenses
-    //get amount
-  
+//list of jobs per expenses
+//get amount

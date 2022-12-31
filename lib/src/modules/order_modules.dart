@@ -27,7 +27,10 @@ class OrderModules extends GetxController {
       return _orders;
     });
   }
-
+  void init(UserModel user) {
+    // fetch jobs, drivers & truck  
+     fetchOrders(user);
+  }
   //fetch orders
   Stream<List<OrderModel>> fetchOrders(UserModel user) {
     if (user.userRole == UserWidgetType.admin ||

@@ -10,7 +10,7 @@ import 'package:trucks_manager/src/ui/widgets/input_fields.dart';
 import '../models/response_model copy.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({ Key? key }) : super(key: key);
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -52,86 +52,97 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // email
-            InputField('Email', emailController, emailError, invalid: emailInvalid,
-              onChanged: (String val){
-                if(val.isNotEmpty){
-                  setState(() {
-                    emailError = false;
-                    emailInvalid = false;
-                  });
-                }
+            InputField('Email', emailController, emailError,
+                invalid: emailInvalid, onChanged: (String val) {
+              if (val.isNotEmpty) {
+                setState(() {
+                  emailError = false;
+                  emailInvalid = false;
+                });
               }
-            ),
+            }),
 
-            // password 
-            InputField("Password", passwordController, passwordError, isHidden: true, invalid: passwordInvalid,
-              onChanged: (String val){
-                if(val.isNotEmpty){
-                  setState(() {
-                    passwordError = false;
-                    passwordInvalid = false;
-                  });
-                }
+            // password
+            InputField("Password", passwordController, passwordError,
+                isHidden: true,
+                invalid: passwordInvalid, onChanged: (String val) {
+              if (val.isNotEmpty) {
+                setState(() {
+                  passwordError = false;
+                  passwordInvalid = false;
+                });
               }
-            ),
+            }),
 
-            const SizedBox(height: 17,),
+            const SizedBox(
+              height: 17,
+            ),
             // login button
             ElevatedButton(
-              onPressed: isLoading ? null : () async {
-                bool _errExist = false;
-                if(emailController.text.isEmpty){
-                  setState(() {
-                    emailError = true;
-                    _errExist = true;
-                  });
-                }if(!GetUtils.isEmail(emailController.text)){
-                  setState(() {
-                    emailInvalid = true;
-                    _errExist = true;
-                  });
-                }
-                if(passwordController.text.isEmpty){
-                  setState(() {
-                    passwordError = true;
-                    _errExist = true;
-                  });
-                }
+              onPressed: isLoading
+                  ? null
+                  : () async {
+                      bool _errExist = false;
+                      if (emailController.text.isEmpty) {
+                        setState(() {
+                          emailError = true;
+                          _errExist = true;
+                        });
+                      }
+                      if (!GetUtils.isEmail(emailController.text)) {
+                        setState(() {
+                          emailInvalid = true;
+                          _errExist = true;
+                        });
+                      }
+                      if (passwordController.text.isEmpty) {
+                        setState(() {
+                          passwordError = true;
+                          _errExist = true;
+                        });
+                      }
 
+                      if (!_errExist) {
+                        // login
+                        setState(() {
+                          isLoading = true;
+                        });
 
-                if(!_errExist){
-                  // login
-                  setState(() {
-                    isLoading = true;
-                  });
+                        final _res = await FirebaseUserModule.login(
+                            emailController.text, passwordController.text);
+                        await Future.delayed(const Duration(seconds: 2));
+                        if (_res.status == ResponseType.success) {
+                          // get user
 
-                  final _res = await FirebaseUserModule.login(emailController.text, passwordController.text);
-                  await Future.delayed(const Duration(seconds: 1));
-                  if(_res.status == ResponseType.success){
-                    // get user
-                    userModule.setCurrentUser(_res.body.toString());
-                    //Get.offAndToNamed('/');
-                  await  Navigator.push(context, MaterialPageRoute(builder: ((context) => const HomePage() )));
-                  }
-                  if(_res.body == 'user-not-found'){
-                    setState(() {
-                      emailInvalid = true;
-                    });
-                  }
-                  if(_res.body == 'wrong-password'){
-                    setState(() {
-                      passwordInvalid = true;
-                    });
-                  }
-                  
-                  setState(() {
-                    isLoading = false;
-                  });
-                }
+                          await userModule.setCurrentUser(_res.body.toString());
+                          print(userModule.currentUser.value);
+                          //Get.offAndToNamed('/');
+                          await Future.delayed(const Duration(seconds: 3));
+                          //Get.off(const HomePage());
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: ((context) => const HomePage())));
+                        }
+                        if (_res.body == 'user-not-found') {
+                          setState(() {
+                            emailInvalid = true;
+                          });
+                        }
+                        if (_res.body == 'wrong-password') {
+                          setState(() {
+                            passwordInvalid = true;
+                          });
+                        }
 
-
-              }, 
-              child: isLoading ? const CircularProgressIndicator() : const Text('Login'),
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    },
+              child: isLoading
+                  ? const CircularProgressIndicator()
+                  : const Text('Login'),
             )
           ],
         ),

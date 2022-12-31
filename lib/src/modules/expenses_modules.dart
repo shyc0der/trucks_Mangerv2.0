@@ -14,6 +14,11 @@ class ExpenseModule extends GetXState {
   final ExpenseModel _expensesModel = ExpenseModel();
   final JobModule _jobModule = JobModule();
   String folder = "receipts";
+  
+  void init(UserModel user) {
+    // fetch jobs, drivers & truck
+    fetchAllExpenses(user);
+  }
 
   Stream<List<ExpenseModel>> fetchAllExpenses(UserModel user) {
     if (user.userRole == UserWidgetType.admin ||

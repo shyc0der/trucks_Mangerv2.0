@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:trucks_manager/src/modules/order_modules.dart';
+import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/login_page.dart';
 import 'package:trucks_manager/src/ui/pages/reports/reports_page.dart';
 
@@ -29,7 +31,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
- 
+  final UserModule _userModule = Get.put(UserModule());
+  final OrderModules _orderModules = Get.put(OrderModules());
   @override
   void initState() {
     super.initState();
@@ -37,6 +40,7 @@ class _HomePageState extends State<HomePage>
     _tabController.addListener(() {
       setState(() {});
     });
+    _orderModules.init(_userModule.currentUser.value);
   }
 
   @override
@@ -48,12 +52,16 @@ class _HomePageState extends State<HomePage>
   bool isCollapsed = true;
   @override
   Widget build(BuildContext context) {
+    print(_userModule.currentUser.value.role);
+    print(_userModule.currentUser.value.firstName);
     return Scaffold(
       drawer: Drawer(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(height: 30,),
+            Container(
+              height: 30,
+            ),
             ListTile(
               leading: const Icon(Icons.bar_chart_outlined),
               title: const Text('Reports'),
@@ -129,16 +137,19 @@ class _HomePageState extends State<HomePage>
               tileColor: Colors.greenAccent.withOpacity(.4),
               onTap: () async {
                 // logout
-                FirebaseUserModule.logout();
-
+               await FirebaseUserModule.logout();
+               await Future.delayed(const Duration(seconds: 1));
+             await  _userModule.setCurrentUser('');
                 // navigate to login
-                await Future.delayed(const Duration(seconds: 1));
-                // Get.offAndToNamed('/login');
+                await Future.delayed(const Duration(seconds: 3));
+              
+                Get.offAll(const LoginPage());
                 // ignore: use_build_context_synchronously
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: ((context) => const LoginPage())));
+
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: ((context) => const LoginPage())));
               },
             ),
           ],
@@ -147,16 +158,18 @@ class _HomePageState extends State<HomePage>
 
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Truck Manager'),
+        title: Text(_userModule.currentUser.value.role == 'driver'
+            ? '${_userModule.currentUser.value.firstName} ${_userModule.currentUser.value.lastName}'
+            : 'Truck Manager'),
       ),
       body: TabBarView(controller: _tabController, children: [
-        // reports page 
-        WorkPage(),
+        // reports page
+        const WorkPage(),
         // users page
-        OthersPage(),
-        
-      //if(_userModule.isSuperUser.value)
-         ReportsPage(),
+        const OthersPage(),
+
+        //if(_userModule.isSuperUser.value)
+        ReportsPage(),
       ]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _tabController.index,
@@ -169,7 +182,7 @@ class _HomePageState extends State<HomePage>
           BottomNavigationBarItem(
               icon: Icon(Icons.work_history_outlined), label: 'Work'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person_add_alt_1_outlined), label: 'Others'),              
+              icon: Icon(Icons.person_add_alt_1_outlined), label: 'Others'),
           BottomNavigationBarItem(
               icon: Icon(Icons.pie_chart_outline), label: 'Reports'),
         ],
