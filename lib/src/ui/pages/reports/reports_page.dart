@@ -8,8 +8,11 @@ import 'package:trucks_manager/src/models/trucks_model.dart';
 import 'package:trucks_manager/src/modules/expenses_modules.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
 import 'package:trucks_manager/src/modules/trucks_modules.dart';
+import 'package:trucks_manager/src/ui/pages/reports/order_report.dart';
 import 'package:trucks_manager/src/ui/pages/reports/reports_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/item_card_widget.dart';
+
+import 'expense_report.dart';
 
 class ReportsPage extends StatelessWidget {
   ReportsPage({Key? key}) : super(key: key);
@@ -41,87 +44,72 @@ class ReportsPage extends StatelessWidget {
             children: [
               // jobs
               ItemCardWidget(
-                label: 'Jobs',
+                label: 'Orders',
                 iconData: Icons.work_outline,
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => StreamBuilder<List<OrderModel>>(
-                          stream: _orderModule.fetchAllOrders(),
-                          builder: (context, snapshot) {
-                            var data = snapshot.data ?? [];
-                            // print(data.asMap());
-                            var totalAmount = data.fold<double>(
-                                0.0,
-                                (amount, order) =>
-                                    amount + (order.amount ?? 0.0));
+           Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => const OrderReportPage()));
+                                   
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (_) =>
+                  //     const OrderReportPage(); 
+//                        StreamBuilder<List<OrderModel>>(
+//                           stream: _orderModule.fetchAllOrders(),
+//                           builder: (context, snapshot) {
+//                             var data = snapshot.data ?? [];
+//                             // print(data.asMap());
+//                             var totalAmount = data.fold<double>(
+//                                 0.0,
+//                                 (amount, order) =>
+//                                     amount + (order.amount ?? 0.0));
 
-                            amountsPerOrderTitle
-                                .addAll({'All': totalAmount.ceilToDouble()});
-                            var newMap = groupBy(data,
-                                (OrderModel orderModel) => orderModel.title);
-                            //print('yyyyyyyyyyyyyyyyyyyyy');
-                            //print(newMap);j
-                            Map<String?, dynamic> groupedAndSum = Map();
-                            newMap.forEach((key, value) {
-                              var tes = value.fold<double>(
-                                  0.0,
-                                  (previousValue, element) =>
-                                      previousValue + (element.amount ?? 0.0));
+//                             amountsPerOrderTitle
+//                                 .addAll({'All': totalAmount.ceilToDouble()});
+//                             var newMap = groupBy(data,
+//                                 (OrderModel orderModel) => orderModel.title);
+//                             //print('yyyyyyyyyyyyyyyyyyyyy');
+//                             //print(newMap);j
+//                             Map<String?, dynamic> groupedAndSum = Map();
+//                             newMap.forEach((key, value) {
+//                               var tes = value.fold<double>(
+//                                   0.0,
+//                                   (previousValue, element) =>
+//                                       previousValue + (element.amount ?? 0.0));
 
-                              amountsPerOrderTitle.addAll({key: tes});
+//                               amountsPerOrderTitle.addAll({key: tes});
 
-                              //print(tes);
-                              //print(key);
-                              groupedAndSum[key] = {
-                                value.fold<double>(
-                                    0.0,
-                                    (previousValue, element) =>
-                                        previousValue + (element.amount ?? 0.0))
-                              };
-                            });
-                            //amountsPerOrderTitle = groupedAndSum;
-                            print(amountsPerOrderTitle);
-                            //  print(amountsPerOrderTitle.entries.toList());
+//                               //print(tes);
+//                               //print(key);
+//                               groupedAndSum[key] = {
+//                                 value.fold<double>(
+//                                     0.0,
+//                                     (previousValue, element) =>
+//                                         previousValue + (element.amount ?? 0.0))
+//                               };
+//                             });
+//                             //amountsPerOrderTitle = groupedAndSum;
+//                             print(amountsPerOrderTitle);
+//                             //  print(amountsPerOrderTitle.entries.toList());
 
-                            //print(groupedAndSum);
-                            //var groupedData=
-                            var fileredData = data.where(
-                                (element) => element.title == 'Transport');
+//                             //print(groupedAndSum);
+//                             //var groupedData=
+//                             var fileredData = data.where(
+//                                 (element) => element.title == 'Transport');
 
-                            var finalData = fileredData.fold<double>(
-                                0.0,
-                                (amount, order) =>
-                                    amount + (order.amount ?? 0.0));
-                            //print(finalData);
-                            //amountsPerOrderTitle
-                            //  .addAll({'Transport': finalData});
-                            //print(amountsPerOrderTitle);
+//                             var finalData = fileredData.fold<double>(
+//                                 0.0,
+//                                 (amount, order) =>
+//                                     amount + (order.amount ?? 0.0));
+//                             //print(finalData);
+//                             //amountsPerOrderTitle
+//                             //  .addAll({'Transport': finalData});
+//                             //print(amountsPerOrderTitle);
 
-                            // future: _expenseModule.fetchByExenpseByOrder(data[].id),
-
-                            return ReportsDetailsPage(
-                              title: 'Jobs',
-                              items: [
-                                for (int i = 0;
-                                    i < amountsPerOrderTitle.length;
-                                    i++)
-                                  ReportItemModel(
-                                      label: amountsPerOrderTitle.keys
-                                          .toList()[i]!,
-                                      amount: amountsPerOrderTitle.values
-                                          .toList()[i],
-                                      expense: 200000),
-                                // ReportItemModel(
-                                //     label: 'Logisticts',
-                                //     amount: 400000,
-                                //     expense: 40000),
-                                // ReportItemModel(
-                                //     label: 'Transport',
-                                //     amount: 600000,
-                                //     expense: 180000),
-                              ],
-                            );
-                          })));
+//                             // future: _expenseModule.fetchByExenpseByOrder(data[].id),
+// const OrderReportPage();
+                            
+//                           })));
+               
                 },
               ),
 
@@ -156,27 +144,15 @@ class ReportsPage extends StatelessWidget {
                         });
                         //print(amountsPerExpenseType);
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => ReportsDetailsPage(
-                                  title: 'Expenses',
-                                  items: [
-                                    for (int i = 0;
-                                        i < amountsPerExpenseType.length;
-                                        i++)
-                                      ReportItemModel(
-                                          label: amountsPerExpenseType.keys
-                                              .toList()[i]!,
-                                          expense: amountsPerExpenseType.values
-                                              .toList()[i]!,
-                                          amount: 2000),
-                                  ],
-                                )));
-                      },
+                            builder: (_) => const ExpenseReportPage()));
+                            },
                     );
                   }),
 
               // trucks
               StreamBuilder<List<TrucksModel>>(
                   stream: _truckModules.fetchTrucks(),
+                  
                   //expenses per truck
                   builder: (context, snapshot) {
                     var data = snapshot.data!;
@@ -211,7 +187,7 @@ class ReportsPage extends StatelessWidget {
                 iconData: Icons.people_alt_outlined,
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => ReportsDetailsPage(
+                      builder: (_) => const  ReportsDetailsPage(
                             title: 'Drivers',
                             items: [
                              

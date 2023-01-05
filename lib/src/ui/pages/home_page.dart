@@ -131,33 +131,47 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
 
-            ListTile(
-              leading: const Icon(Icons.logout_outlined),
-              title: const Text('Logout'),
-              tileColor: Colors.greenAccent.withOpacity(.4),
-              onTap: () async {
-                // logout
-               await FirebaseUserModule.logout();
-               await Future.delayed(const Duration(seconds: 1));
-             await  _userModule.setCurrentUser('');
-                // navigate to login
-                await Future.delayed(const Duration(seconds: 3));
-              
-                Get.offAll(const LoginPage());
-                // ignore: use_build_context_synchronously
+            Expanded(
+              child: Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: ListTile(
+                  leading: const Icon(Icons.logout_outlined),
+                  title: const Text('Logout'),
+                  tileColor: Colors.greenAccent.withOpacity(.4),
+                  onTap: () async {
+                    // logout
+                   await FirebaseUserModule.logout();
+                   await Future.delayed(const Duration(seconds: 1));
+                 await  _userModule.setCurrentUser('');
+                    // navigate to login
+                    await Future.delayed(const Duration(seconds: 3));
+                  
+                    Get.offAll(const LoginPage());
+                    // ignore: use_build_context_synchronously
 
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: ((context) => const LoginPage())));
-              },
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: ((context) => const LoginPage())));
+                  },
+                ),
+              ),
             ),
+          
+        const  SizedBox(height: 2,),
+      
           ],
         ),
       ), //reports pages
 
       appBar: AppBar(
         centerTitle: true,
+        actions: <Widget>[
+          IconButton(onPressed: (){}, 
+          icon: const Icon(Icons.update_outlined)),
+                  
+   
+        ],
         title: Text(_userModule.currentUser.value.role == 'driver'
             ? '${_userModule.currentUser.value.firstName} ${_userModule.currentUser.value.lastName}'
             : 'Truck Manager'),

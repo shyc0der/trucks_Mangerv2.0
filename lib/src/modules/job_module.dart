@@ -3,11 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:trucks_manager/src/models/trucks_model.dart';
+import 'package:trucks_manager/src/modules/expenses_modules.dart';
 import 'package:trucks_manager/src/modules/trucks_modules.dart';
 import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/user_widget.dart';
 
+import '../models/expenses_model.dart';
 import '../models/jobs_model.dart';
+import '../models/order_model.dart';
 import '../models/response_model copy.dart';
 import '../models/user_model.dart';
 class JobModule extends GetxController {
@@ -174,5 +177,20 @@ Future<ResponseModel> updateJob(String id,Map<String, dynamic> map)async{
       });
     
   }
-  
+
+//delete Job
+  Future<void> deleteJob(String jobId, orderId) async{
+    OrderModel orderModel=OrderModel();
+    //fetchjobs and get order id 
+    await orderModel.deleteOnline(orderId);
+    await jobModel.deleteOnline(jobId);
+
+    // delete expenses
+    final ExpenseModule expenseModule = ExpenseModule();
+    final List<ExpenseModel> _exs =await expenseModule.fetchByJobExpensesNoUser(jobId).first;
+    for(var x in _exs){
+      x.deleteOnline(x.id ?? 'null');
+    }
+  }
 }
+  

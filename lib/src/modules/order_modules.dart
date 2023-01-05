@@ -27,6 +27,7 @@ class OrderModules extends GetxController {
       return _orders;
     });
   }
+  
   void init(UserModel user) {
     // fetch jobs, drivers & truck  
      fetchOrders(user);
@@ -117,8 +118,8 @@ class OrderModules extends GetxController {
       var _orders = snapshot.docs.map<OrderModel>((doc) {
         return OrderModel.from({...(doc.data() as Map), 'id': doc.id});
       }).toList();
-      orders.clear();
-      orders.addAll(_orders);
+      //orders.clear();
+      //orders.addAll(_orders);
       return _orders;
     });
   }

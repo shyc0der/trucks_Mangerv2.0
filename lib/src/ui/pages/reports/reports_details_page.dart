@@ -45,7 +45,8 @@ class _ReportsDetailsPageState extends State<ReportsDetailsPage> {
             Card(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                child: Row(
+                child:
+                 Row(
                   children: [
                     const Text('Date range:'),
                     Expanded(

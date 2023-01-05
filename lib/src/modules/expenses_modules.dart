@@ -58,6 +58,8 @@ class ExpenseModule extends GetXState {
       });
     
   }
+  //fetch Expenses By date
+  
   
   Stream<List<ExpenseModel>> fetchByExpensesByState(
       String state, UserModel user) {
@@ -170,6 +172,19 @@ class ExpenseModule extends GetXState {
       });
       return expenses;
     }
+  }
+   Stream<List<ExpenseModel>> fetchByJobExpensesNoUser(String jobId) {
+      var expenses = _expensesModel
+          .fetchStreamsDataWhere('jobId', isEqualTo: jobId, orderBy: 'date')
+          .map<List<ExpenseModel>>((snapshot) {
+        return snapshot.docs
+            .map<ExpenseModel>((doc) =>
+                ExpenseModel.fromMap({'id': doc.id, ...doc.data() as Map}))
+            .toList();
+      });
+
+      return expenses;
+    
   }
 
   Future<List<ExpenseModel>> fetchAllExpensesByJob(String jobId) async {

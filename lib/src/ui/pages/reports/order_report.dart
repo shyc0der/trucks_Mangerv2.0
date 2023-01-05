@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:trucks_manager/src/models/expenses_model.dart';
-import 'package:trucks_manager/src/modules/expenses_modules.dart';
+import 'package:trucks_manager/src/modules/order_modules.dart';
 import 'package:trucks_manager/theme_data.dart';
 
-class ExpenseReportPage extends StatefulWidget {
-  const ExpenseReportPage({super.key});
+import '../../../models/order_model.dart';
+
+class OrderReportPage extends StatefulWidget {
+  const OrderReportPage({super.key});
 
   @override
-  State<ExpenseReportPage> createState() => _ExpenseReportPageState();
+  State<OrderReportPage> createState() => _OrderReportPageState();
 }
 
-class _ExpenseReportPageState extends State<ExpenseReportPage> {
+class _OrderReportPageState extends State<OrderReportPage> {
   DateTimeRange _dateTimeRange =
       DateTimeRange(start: DateTime(2022), end: DateTime.now());
   late final TextEditingController _dateController;
@@ -32,32 +33,33 @@ class _ExpenseReportPageState extends State<ExpenseReportPage> {
 
   @override
   Widget build(BuildContext context) {
-    final ExpenseModule _expenseModule = Get.put(ExpenseModule());
-    List<Map<String, dynamic>> amountsPerExpenseType = [];
+    final OrderModules _orderModules = Get.put(OrderModules());
+    List<Map<String, dynamic>> amountsPerOrderType = [];
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Expense Report'),
+        title: const Text('Order Report'),
       ),
-      body: StreamBuilder<List<ExpenseModel>>(
-          stream: _expenseModule.fetchAllWhereDateRangeExpenses(_dateTimeRange),
+      body: StreamBuilder<List<OrderModel>>(
+          stream: _orderModules.fetchAllWhereOrders(_dateTimeRange),
           builder: (context, snapshot) {
             var data = snapshot.data ?? [];
             var totalAmount = data.fold<double>(
                 0.0,
-                (amount, expense) =>
-                    amount + (double.tryParse(expense.totalAmount!) ?? 0.0));
-            amountsPerExpenseType.clear();
+                (amount, order) =>
+                    amount + (order.amount ?? 0.0));
             var newMap = groupBy(
-                data, (ExpenseModel expenseModel) => expenseModel.expenseType);
+                data, (OrderModel orderModel) => orderModel.title);
+            amountsPerOrderType.clear();
             newMap.forEach((key, value) {
               var tes = value.fold<double>(
                   0.0,
-                  (previousValue, expense) =>
+                  (previousValue, element) =>
                       previousValue +
-                      (double.tryParse(expense.totalAmount!) ?? 0.0));
-              amountsPerExpenseType.add({
-                'item': {'title': key, 'amount': tes}
+                      (element.amount ?? 0.0));
+                      
+              amountsPerOrderType.add({
+                'item': {'title': key, 'amount':  tes}
               });
             });
             return Column(
@@ -80,11 +82,12 @@ class _ExpenseReportPageState extends State<ExpenseReportPage> {
 
                           if (dtr != null) {
                             setState(() {
-                              _dateTimeRange = dtr;
-                              _dateController.text =
-                                  '${_dateTimeRange.start.toString().substring(0, 10)} - ${_dateTimeRange.end.toString().substring(0, 10)}';
+                               _dateTimeRange = dtr;
+                            _dateController.text =
+                                '${_dateTimeRange.start.toString().substring(0, 10)} - ${_dateTimeRange.end.toString().substring(0, 10)}';
+                      
                             });
-                            // onDateRangeChanged?.call(_dateTimeRange);
+                                // onDateRangeChanged?.call(_dateTimeRange);
                           }
                           print('hhhhhhhhhhhhhhhhhhh');
                           print(_dateTimeRange);
@@ -103,13 +106,12 @@ class _ExpenseReportPageState extends State<ExpenseReportPage> {
                         isVisible: true,
                         textStyle: const TextStyle(fontSize: 18)),
                     title: ChartTitle(
-                        text:
-                            'Total Amount : KES ${doubleFormat.format(totalAmount)}',
+                        text: 'Total Amount : KES ${doubleFormat.format(totalAmount)}',
                         textStyle:
                             const TextStyle(fontWeight: FontWeight.bold)),
                     series: <CircularSeries>[
-                      PieSeries<Map<String, dynamic>, String>(
-                        dataSource: amountsPerExpenseType,
+                      DoughnutSeries<Map<String, dynamic>, String>(
+                        dataSource: amountsPerOrderType,
                         xValueMapper: (Map<String, dynamic> maps, _) =>
                             maps['item']['title'],
                         yValueMapper: (Map<String, dynamic> maps, _) =>
@@ -125,13 +127,13 @@ class _ExpenseReportPageState extends State<ExpenseReportPage> {
                   height: 20,
                 ),
                 const Center(
-                  child: Text('EXPENSES TABLE'),
+                  child: Text('OrderS TABLE'),
                 ),
                 Expanded(
                   child: Center(
                     child: ListView.builder(
                         //shrinkWrap: true,
-                        itemCount: amountsPerExpenseType.length,
+                        itemCount: amountsPerOrderType.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Padding(
                             padding: const EdgeInsets.only(left: 50, right: 50),
@@ -147,7 +149,7 @@ class _ExpenseReportPageState extends State<ExpenseReportPage> {
                                           height: 50,
                                           child: Center(
                                             child: Text(
-                                                amountsPerExpenseType[index]
+                                                amountsPerOrderType[index]
                                                     ['item']['title']),
                                           ),
                                         ),
@@ -155,7 +157,7 @@ class _ExpenseReportPageState extends State<ExpenseReportPage> {
                                           height: 50,
                                           child: Center(
                                             child: Text(
-                                                'KES ${doubleFormat.format(amountsPerExpenseType[index]['item']['amount'])}'),
+                                                'KES ${doubleFormat.format(amountsPerOrderType[index]['item']['amount'])}'),
                                           ),
                                         ),
                                       ])
