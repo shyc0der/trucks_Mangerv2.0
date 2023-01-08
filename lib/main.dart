@@ -9,7 +9,6 @@ import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/login_page.dart';
 import 'package:trucks_manager/src/ui/pages/home_page.dart';
 
-import 'package:trucks_manager/src/ui/pages/reports/expense_report.dart';
 import 'package:trucks_manager/theme_data.dart';
 
 void main() async {

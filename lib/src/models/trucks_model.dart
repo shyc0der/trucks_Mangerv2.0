@@ -47,7 +47,9 @@ class TrucksModel extends Model {
           0.0,
           (previousValue, element) =>
               previousValue + (double.tryParse(element.totalAmount!) ?? 0.0));
+   
     });
+    print(expenses);
     return expenses;
   }
 

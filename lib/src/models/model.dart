@@ -12,25 +12,30 @@ class Model {
   static Future<void> initiateDbs() async {
     try {
       await Firebase.initializeApp(
-          options: const FirebaseOptions(
-        apiKey: 'AIzaSyDwn4T6UwLMqLLD5w7jARWVJabiS7DyAmY',
-        appId: '1:834602052606:web:0852fa8eedae2746682eaf',
-        messagingSenderId: '834602052606',
-        projectId: 'trucks-c05a8',
-        databaseURL: "https://trucks-c05a8.firebaseio.com",
-        storageBucket: "trucks-c05a8.appspot.com",
-        measurementId: "G-6CQQ394FHP",
-      ));
+      //     options: const FirebaseOptions(
+      //   apiKey: 'AIzaSyDwn4T6UwLMqLLD5w7jARWVJabiS7DyAmY',
+      //   appId: '1:834602052606:web:0852fa8eedae2746682eaf',
+      //   messagingSenderId: '834602052606',
+      //   projectId: 'trucks-c05a8',
+      //   databaseURL: "https://trucks-c05a8.firebaseio.com",
+      //   storageBucket: "trucks-c05a8.appspot.com",
+      //   measurementId: "G-6CQQ394FHP",
+      // )
+      ).whenComplete(() {
+        print("complete");
+      });
     } catch (e) {
       // ignore: avoid_print
       print(e);
     }
   }
-Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> map)async{
-    // DocumentReference _dr = 
+
+  Future<DocumentReference<Map<String, dynamic>>> saveOnline(
+      Map<String, dynamic> map) async {
+    // DocumentReference _dr =
     return await firestore.collection(collectionName).add(map);
   }
-  
+
   Future<void> saveOnlineWithId(String id, Map<String, dynamic> map) async {
     await firestore.collection(collectionName).doc(id).set(map);
   }
@@ -52,8 +57,8 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
     return (await firestore.collection(collectionName).doc(id).get());
   }
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>> fetchStreamsDataById(String id) {
-    
+  Stream<DocumentSnapshot<Map<String, dynamic>>> fetchStreamsDataById(
+      String id) {
     return firestore.collection(collectionName).doc(id).snapshots();
   }
 
@@ -164,8 +169,7 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
     List<Object?>? whereNotIn,
     bool? isNull,
     String? orderBy,
-  } 
-  ) {
+  }) {
     final ref = firestore.collection(collectionName);
     var ref2;
     if (orderBy != null) {
@@ -173,7 +177,7 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
     } else {
       ref2 = ref;
     }
-    
+
     return ref2
         .where(
           field,
@@ -188,10 +192,13 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
           whereIn: whereIn,
           whereNotIn: whereNotIn,
           isNull: isNull,
-        ).snapshots();
+        )
+        .snapshots();
   }
-   Stream<QuerySnapshot> fetchStreamsDatasWhere(
-    String field, String field2,{
+
+  Stream<QuerySnapshot> fetchStreamsDatasWhere(
+    String field,
+    String field2, {
     Object? isEqualTo,
     Object? isNotEqualTo,
     Object? isLessThan,
@@ -204,15 +211,14 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
     List<Object?>? whereNotIn,
     bool? isNull,
     String? orderBy,
-  } 
-  ) {
+  }) {
     final ref = firestore.collection(collectionName);
     var ref2;
     if (orderBy != null) {
       ref2 = ref.orderBy(orderBy, descending: true);
     } else {
       ref2 = ref;
-    }    
+    }
     return ref2
         .where(
           field,
@@ -227,7 +233,9 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
           whereIn: whereIn,
           whereNotIn: whereNotIn,
           isNull: isNull,
-        ).where(field2,
+        )
+        .where(
+          field2,
           isEqualTo: isEqualTo,
           isNotEqualTo: isNotEqualTo,
           isLessThan: isLessThan,
@@ -239,7 +247,8 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
           whereIn: whereIn,
           whereNotIn: whereNotIn,
           isNull: isNull,
-        ).snapshots();
+        )
+        .snapshots();
   }
 }
 // options: FirebaseOptions(
@@ -249,9 +258,7 @@ Future<DocumentReference<Map<String, dynamic>>> saveOnline(Map<String, dynamic> 
 //          storageBucket: "trucks-c05a8.appspot.com",
 //          messagingSenderId: "834602052606",
 //         appId: "1:834602052606:web:7b054961f5251c90682eaf",
-//         measurementId: "G-ZMXMTPH316",                 
+//         measurementId: "G-ZMXMTPH316",
 //         databaseURL: "https://trucks-c05a8.firebaseio.com"
 
-
-         
 //          )

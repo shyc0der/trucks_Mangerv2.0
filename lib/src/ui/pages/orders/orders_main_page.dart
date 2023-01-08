@@ -84,10 +84,11 @@ class _OrdersMainPageState extends State<OrdersMainPage> {
                                     builder: (_) => OrdersPage(val.value)));
                               },
                             );
-                          } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
+                          } 
+                          else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                           }
                         })
                

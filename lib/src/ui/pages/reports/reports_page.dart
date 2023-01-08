@@ -50,65 +50,7 @@ class ReportsPage extends StatelessWidget {
            Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => const OrderReportPage()));
                                    
-                  // Navigator.of(context).push(MaterialPageRoute(
-                  //     builder: (_) =>
-                  //     const OrderReportPage(); 
-//                        StreamBuilder<List<OrderModel>>(
-//                           stream: _orderModule.fetchAllOrders(),
-//                           builder: (context, snapshot) {
-//                             var data = snapshot.data ?? [];
-//                             // print(data.asMap());
-//                             var totalAmount = data.fold<double>(
-//                                 0.0,
-//                                 (amount, order) =>
-//                                     amount + (order.amount ?? 0.0));
-
-//                             amountsPerOrderTitle
-//                                 .addAll({'All': totalAmount.ceilToDouble()});
-//                             var newMap = groupBy(data,
-//                                 (OrderModel orderModel) => orderModel.title);
-//                             //print('yyyyyyyyyyyyyyyyyyyyy');
-//                             //print(newMap);j
-//                             Map<String?, dynamic> groupedAndSum = Map();
-//                             newMap.forEach((key, value) {
-//                               var tes = value.fold<double>(
-//                                   0.0,
-//                                   (previousValue, element) =>
-//                                       previousValue + (element.amount ?? 0.0));
-
-//                               amountsPerOrderTitle.addAll({key: tes});
-
-//                               //print(tes);
-//                               //print(key);
-//                               groupedAndSum[key] = {
-//                                 value.fold<double>(
-//                                     0.0,
-//                                     (previousValue, element) =>
-//                                         previousValue + (element.amount ?? 0.0))
-//                               };
-//                             });
-//                             //amountsPerOrderTitle = groupedAndSum;
-//                             print(amountsPerOrderTitle);
-//                             //  print(amountsPerOrderTitle.entries.toList());
-
-//                             //print(groupedAndSum);
-//                             //var groupedData=
-//                             var fileredData = data.where(
-//                                 (element) => element.title == 'Transport');
-
-//                             var finalData = fileredData.fold<double>(
-//                                 0.0,
-//                                 (amount, order) =>
-//                                     amount + (order.amount ?? 0.0));
-//                             //print(finalData);
-//                             //amountsPerOrderTitle
-//                             //  .addAll({'Transport': finalData});
-//                             //print(amountsPerOrderTitle);
-
-//                             // future: _expenseModule.fetchByExenpseByOrder(data[].id),
-// const OrderReportPage();
-                            
-//                           })));
+                
                
                 },
               ),
@@ -142,8 +84,7 @@ class ReportsPage extends StatelessWidget {
                                       0.0));
                           amountsPerExpenseType.addAll({key: tes});
                         });
-                        //print(amountsPerExpenseType);
-                        Navigator.of(context).push(MaterialPageRoute(
+                      Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => const ExpenseReportPage()));
                             },
                     );
@@ -167,14 +108,9 @@ class ReportsPage extends StatelessWidget {
                                     for(int i=0; i < data.length; i++)
                                     ReportItemModel(
                                         label: data[i].vehicleRegNo!,
-                                        amount: 800000,
-                                        expense: 0,
-                                        //data[i].getTotalExpense(DateTimeRange(start: DateTime.now().subtract(const Duration(days: 30)), 
-                                      //end: DateTime.now()
-                                      
-                                      //) )
-                                        ),
-                                   
+                                        amounter: data[i].getTotalExpense(DateTimeRange(start: DateTime.now().subtract(const Duration(days: 30)), 
+                                      end: DateTime.now())),
+                                        expense: 0,),
                                   ],
                                 )));
                       },
