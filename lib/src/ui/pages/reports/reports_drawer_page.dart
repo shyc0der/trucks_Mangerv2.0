@@ -65,7 +65,7 @@ class _ReportsPageState extends State<ReportsDrawerPage> {
                       'A5': pw.PdfPageFormat.a5,
                       'A6': pw.PdfPageFormat.a6,
                     },
-                    build: (pageFormat) async {
+                     build: (pageFormat) async {
                       return (await pdfGenerator!
                               .generatePdf(pageFormat: pageFormat))!
                           .save();

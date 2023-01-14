@@ -24,9 +24,7 @@ class UserModule extends GetxController {
 
   UserModel? getStreamUserById(String? userId) {
     final _users = users.where((user) => user.id == userId).toList();
-print('jjjjjjjjjjjjjjjjjjjjjjjjjjjjjj');
-    print(_users.asMap());
-    print(users.asMap());
+
     if (_users.isNotEmpty) {
       return _users.first;
     }

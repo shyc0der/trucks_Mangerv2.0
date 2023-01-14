@@ -52,8 +52,7 @@ class _HomePageState extends State<HomePage>
   bool isCollapsed = true;
   @override
   Widget build(BuildContext context) {
-   //print(_userModule.currentUser.value.role);
-   //print(_userModule.currentUser.value.firstName);
+
     return Scaffold(
       drawer: Drawer(
         child: Column(

@@ -89,7 +89,7 @@
 //               //         })));
 //             });
 
-//             print(amountsPerExpenseType.length);
+//        
 //             return Column(
 //               crossAxisAlignment: CrossAxisAlignment.start,
 //               children: [

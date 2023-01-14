@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                           // get user
 
                           await userModule.setCurrentUser(_res.body.toString());
-                          //print(userModule.currentUser.value);
+                          
                           //Get.offAndToNamed('/');
                           await Future.delayed(const Duration(seconds: 3));
                           //Get.off(const HomePage());

@@ -157,8 +157,7 @@ class ReportItemModel {
   double amounts() {
     amounter.map((event) => amount = event);
 
-    print('hhhhhhhhhhhhhhhhhhhhhhh');
-    print(amount);
+  
     return amount;
   }
 
