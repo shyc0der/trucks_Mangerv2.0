@@ -1,5 +1,6 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:trucks_manager/src/models/trucks_model.dart';
 
@@ -14,16 +15,25 @@ class TruckModules extends GetxController {
     fetchTrucks();
   }
 
-  Stream<List<TrucksModel>> fetchTrucks() {
-    return _trucksModel.fetchStreamsData().map<List<TrucksModel>>((streams) {
-      var _trucks = streams.docs
-          .map<TrucksModel>((doc) =>
-              TrucksModel.fromMap({'id': doc.id, ...doc.data() as Map}))
-          .toList();
-      trucks.clear();
-      trucks.addAll(_trucks);
-      return _trucks;
-    });
+  Future<List<TrucksModel>> fetchTrucks() async {
+    var trucks2 = (await _trucksModel.fetchStreamsData().first)
+        .docs
+        .map<Future<TrucksModel>>((doc) async {
+      var t = TrucksModel.fromMap({'id': doc.id, ...doc.data() as Map});
+      t.reportTotal = await t.getTotals(DateTimeRange(
+          start: DateTime.now().subtract(const Duration(days: 30)),
+          end: DateTime.now()));
+      return t;
+    }).toList();
+
+    List<TrucksModel> _trucks = [];
+    for (var f in trucks2) {
+      _trucks.add(await f);
+    }
+
+    trucks.clear();
+    trucks.addAll(_trucks);
+    return trucks;
   }
 
   TrucksModel? getTruckById(String? truckId) {

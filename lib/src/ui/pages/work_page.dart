@@ -124,8 +124,8 @@ class _WorkPageState extends State<WorkPage> {
                 }),
 
             // trucks
-            StreamBuilder<List<TrucksModel>>(
-                stream: _truckModules.fetchTrucks(),
+            FutureBuilder<List<TrucksModel>>(
+                future: _truckModules.fetchTrucks(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Text('Error = ${snapshot.error}');

@@ -37,6 +37,9 @@ class UsersListPage extends StatelessWidget {
                     for (var us in user)
                       GestureDetector(
                         onDoubleTap: () {
+                          
+                        },
+                        onTap: () {
                           Navigator.push(context,MaterialPageRoute(builder: ((context) => 
                           isCustomer== true ? AddCustomer(customer: us,isEditing: true,) :
                           AddUserWidget( user: us, isEditing: true))));

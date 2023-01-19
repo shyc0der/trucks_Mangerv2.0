@@ -146,20 +146,20 @@ class _ReportsDetailsPageState extends State<ReportsDetailsPage> {
 class ReportItemModel {
   ReportItemModel({
     required this.label,
-    required this.amounter,
+    required this.amount,
     required this.expense,
   });
   final String label;
-  final Stream<double> amounter;
+  //final double amounter;
   final double expense;
   double amount = 0.0;
 
-  double amounts() {
-    amounter.map((event) => amount = event);
+  // double amounts() {
+  //   amounter.map((event) => amount = event);
 
   
-    return amount;
-  }
+  //   return amount;
+  // }
 
   int get score {
     if (amount == 0 || expense == 0) {

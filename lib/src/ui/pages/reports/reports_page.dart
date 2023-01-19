@@ -47,11 +47,8 @@ class ReportsPage extends StatelessWidget {
                 label: 'Orders',
                 iconData: Icons.work_outline,
                 onTap: () {
-           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => const OrderReportPage()));
-                                   
-                
-               
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => const OrderReportPage()));
                 },
               ),
 
@@ -84,16 +81,16 @@ class ReportsPage extends StatelessWidget {
                                       0.0));
                           amountsPerExpenseType.addAll({key: tes});
                         });
-                      Navigator.of(context).push(MaterialPageRoute(
+                        Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => const ExpenseReportPage()));
-                            },
+                      },
                     );
                   }),
 
               // trucks
-              StreamBuilder<List<TrucksModel>>(
-                  stream: _truckModules.fetchTrucks(),
-                  
+              FutureBuilder<List<TrucksModel>>(
+                  future: _truckModules.fetchTrucks(),
+
                   //expenses per truck
                   builder: (context, snapshot) {
                     var data = snapshot.data!;
@@ -105,12 +102,14 @@ class ReportsPage extends StatelessWidget {
                             builder: (_) => ReportsDetailsPage(
                                   title: 'Trucks',
                                   items: [
-                                    for(int i=0; i < data.length; i++)
-                                    ReportItemModel(
+                                    for (int i = 0; i < data.length; i++)
+                                      ReportItemModel(
                                         label: data[i].vehicleRegNo!,
-                                        amounter: data[i].getTotalExpense(DateTimeRange(start: DateTime.now().subtract(const Duration(days: 30)), 
-                                      end: DateTime.now())),
-                                        expense: 0,),
+                                        amount: data[i].reportTotal[0],
+                                        //data[i].getTotalExpense(DateTimeRange(start: DateTime.now().subtract(const Duration(days: 30)),
+                                        // end: DateTime.now())),
+                                        expense: data[i].reportTotal[1],
+                                      ),
                                   ],
                                 )));
                       },
@@ -123,11 +122,9 @@ class ReportsPage extends StatelessWidget {
                 iconData: Icons.people_alt_outlined,
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => const  ReportsDetailsPage(
+                      builder: (_) => const ReportsDetailsPage(
                             title: 'Drivers',
-                            items: [
-                             
-                            ],
+                            items: [],
                           )));
                 },
               ),

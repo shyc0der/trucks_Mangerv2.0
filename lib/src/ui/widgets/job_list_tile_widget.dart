@@ -8,6 +8,7 @@ class JobListTile extends StatelessWidget {
       required this.dateTime,
       required this.amount,
       this.onTap,
+      this.onDoubleTap,
       required this.jobState,
       Key? key})
       : super(key: key);
@@ -17,12 +18,14 @@ class JobListTile extends StatelessWidget {
   final String amount;
   final OrderWidgateState jobState;
   final void Function()? onTap;
+  final void Function()? onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
         onTap: onTap,
+        onLongPress: onDoubleTap,
         leading: Container(
           width: 6,
           color: jobState.color,

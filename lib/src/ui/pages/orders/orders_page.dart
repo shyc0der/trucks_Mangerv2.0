@@ -71,6 +71,9 @@ class _OrdersPageState extends State<OrdersPage> {
                     amount: doubleFormat.format(
                         (displayOrders[index].amount ?? 0).ceilToDouble()),
                     jobState: displayOrders[index].orderStates,
+                    onDoubleTap: () {
+                      
+                    },
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (_) =>

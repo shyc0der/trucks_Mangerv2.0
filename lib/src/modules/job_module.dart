@@ -27,7 +27,7 @@ class JobModule extends GetxController {
   
   void fetchTrucks()async{
    final _truck = TruckModules();
-   _truck.fetchTrucks().listen((event) {
+   _truck.fetchTrucks().then((event) {
      trucks.clear();
      trucks.addAll(event);
    }); 

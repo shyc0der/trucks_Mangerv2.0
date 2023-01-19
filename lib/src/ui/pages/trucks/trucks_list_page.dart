@@ -34,8 +34,8 @@ class TrucksListPage extends StatelessWidget {
       body: Align(
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
-          child: StreamBuilder<List<TrucksModel?>>(
-              stream: _truckModules.fetchTrucks(),
+          child: FutureBuilder<List<TrucksModel?>>(
+              future: _truckModules.fetchTrucks(),
               builder: (context, snapshot) {
                 var trucks = snapshot.data ?? [];
                 return Wrap(
