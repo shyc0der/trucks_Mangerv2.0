@@ -71,4 +71,6 @@ Map<String,dynamic> asMap(){
   };
 }
 
+  // static Future<List<OrderModel>?> fromMap(Map<String, dynamic> map) {}
+
 }

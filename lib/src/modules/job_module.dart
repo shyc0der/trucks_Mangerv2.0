@@ -60,6 +60,15 @@ class JobModule extends GetxController {
     }).toList();
     return _res.isNotEmpty ? _res.first : null;
   }
+  //fetch jobs by user
+  Future<List<JobModel>?> fetchJobsByUser(UserModel userModel)async{
+
+    final _res = (await jobModel.fetchWhereData('userId', isEqualTo: userModel.id, orderBy: 'dateCreated')).
+    map((documentSnapshot) {
+      return JobModel.fromMap({'id': documentSnapshot.id, ...documentSnapshot.data()});
+    }).toList();
+    return _res;
+  }
   //fetch jobs by user and state
     Stream<List<JobModel>> fetchJobsByState(String state,UserModel user ) {
  if(user.userRole == UserWidgetType.admin || user.userRole == UserWidgetType.manager){

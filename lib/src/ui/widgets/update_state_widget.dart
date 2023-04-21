@@ -137,11 +137,12 @@ Future<OrderWidgateState?> changeDialogStateJob(OrderWidgateState getJobState,
               // Closed for driver
               if (isJob && isExpenseApproved == false || (!isJob))
                 if ((isJob && getJobState == OrderWidgateState.Open) ||
-                    (!isJob &&
+                    (!(isJob &&
                         (getJobState == OrderWidgateState.Rejected ||
-                            getJobState == OrderWidgateState.Approved)))
+                            getJobState == OrderWidgateState.Approved))))
                   ElevatedButton.icon(
                     onPressed: () {
+                      print(getJobState);
                       Get.back(result: OrderWidgateState.Closed);
                       isExpenseApproved = false;
                     },

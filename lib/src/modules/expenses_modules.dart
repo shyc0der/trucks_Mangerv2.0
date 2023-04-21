@@ -248,4 +248,17 @@ class ExpenseModule extends GetXState {
     });
     return true;
   }
+  Future<void> deleteExpenses(String id)async{
+
+  await  _expensesModel.deleteOnline(id);
+ }
+
+   Future<List<ExpenseModel>?> fetchExpensesByUser(UserModel userModel)async{
+
+    final _res = (await _expensesModel.fetchWhereData('userId', isEqualTo: userModel.id, orderBy: 'dateCreated')).
+    map((documentSnapshot) {
+      return ExpenseModel.fromMap({'id': documentSnapshot.id, ...documentSnapshot.data()});
+    }).toList();
+    return _res;
+  }
 }

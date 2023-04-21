@@ -71,7 +71,7 @@ void dispose(){
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Add Customer'),
+        title:  Text( widget.isEditing== true ? 'Edit Customer' : 'Add Customer'),
       ),
       body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),

@@ -10,6 +10,7 @@ import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
 
 import '../../../models/expenses_model.dart';
 import '../../../modules/user_modules.dart';
+import '../../widgets/dismiss_widget.dart';
 
 class ExpensesPage extends StatefulWidget {
   ExpensesPage(this.state,{Key? key}) : super(key: key);
@@ -65,6 +66,20 @@ class _ExpensesPageState extends State<ExpensesPage> {
     super.initState();
  
   }
+    Future<bool> _dismissDialog(ExpenseModel expenseModel)async{
+     ExpenseModule _expenseModule=ExpenseModule();
+
+    bool? _delete = await dismissWidget('${expenseModel.expenseType}');
+
+    if(_delete == true){
+
+      var _res= await _expenseModule.deleteExpenses(expenseModel.id!);
+     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Expenses Deleted!"),
+      ));
+    }
+  return _delete == true;
+  }  
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +110,14 @@ class _ExpensesPageState extends State<ExpensesPage> {
                 amount: doubleFormat.format(
                     (double.tryParse(displayExpenses[index].totalAmount ?? '0'))),
                 expenseState: displayExpenses[index].expensesState,
+                onDoubleTap:(() async {
+                  await  _dismissDialog(snapshot.data![index]);  
+                }),
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => ExpenseDetailsPage(displayExpenses[index])));
                 },
+                
               );
             },
           );}

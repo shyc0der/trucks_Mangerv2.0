@@ -6,6 +6,8 @@ import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/pages/orders/orders_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/job_list_tile_widget.dart';
 import '../../../models/order_model.dart';
+import '../../../modules/job_module.dart';
+import '../../widgets/dismiss_widget.dart';
 import 'add_order_widget.dart';
 
 class OrdersPage extends StatefulWidget {
@@ -27,6 +29,30 @@ class _OrdersPageState extends State<OrdersPage> {
     super.initState();
     
   }
+   Future<bool> _dismissDialog(OrderModel orderModel)async{
+     JobModule _jobModule2=JobModule();
+     String? _jobId;
+
+    bool? _delete = await dismissWidget('${orderModel.orderNo}');
+
+    if(_delete == true){
+      // delete from server
+      //fetch job id by orderid
+      var _res= await _jobModule2.fetchJobsByOrderId(orderModel.id ?? '');
+      _jobId=_res?.id;    
+            
+     if(_jobId != null){
+       await _jobModule2.deleteJob(_jobId, orderModel.id);
+     }else{
+       await orderModel.deleteOnline(orderModel.id ?? 'null');
+     }
+
+     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Order Deleted!"),
+      ));
+    }
+  return _delete == true;
+  }  
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +97,8 @@ class _OrdersPageState extends State<OrdersPage> {
                     amount: doubleFormat.format(
                         (displayOrders[index].amount ?? 0).ceilToDouble()),
                     jobState: displayOrders[index].orderStates,
-                    onDoubleTap: () {
-                      
+                    onDoubleTap: () async {
+                      await  _dismissDialog(snapshot.data![index]);                        
                     },
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(

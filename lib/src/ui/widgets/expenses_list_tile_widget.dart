@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
 class ExpensesListTile extends StatelessWidget {
-  const ExpensesListTile({required this.title, required this.driverName,required this.truckNumber, required this.dateTime, required this.amount, this.onTap, required this.expenseState, Key? key}) : super(key: key);
+  const ExpensesListTile({required this.title, required this.driverName,required this.truckNumber, required this.dateTime, required this.amount, 
+  this.onTap, 
+  this.onDoubleTap, 
+  required this.expenseState, Key? key}) : super(key: key);
   final String title;
   final String driverName;
   final String truckNumber;
@@ -9,6 +12,7 @@ class ExpensesListTile extends StatelessWidget {
   final String amount;
   final OrderWidgateState expenseState;
   final void Function()? onTap;
+  final void Function()? onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +21,7 @@ class ExpensesListTile extends StatelessWidget {
         contentPadding: const EdgeInsets.only(top:4.0,bottom: 4.0),
         isThreeLine: true,
         onTap: onTap,
+        onLongPress: onDoubleTap,
         leading: Container(
           width: 6,
           color: expenseState.color,

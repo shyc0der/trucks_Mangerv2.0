@@ -126,7 +126,9 @@ class JobDetailPageState extends State<JobDetailPage>
                         onClose: () async {
                           if (expenses.isNotEmpty) {
                             for (var element in expenses) {
-                              if (!element.state!.contains('Closed')) {
+                              print(getJobState);
+                              print(isExpenseState);
+                              if (!(element.state!.contains('Closed'))) {
                                 setState(() {
                                   isExpenseState = true;
                                 });
@@ -135,19 +137,23 @@ class JobDetailPageState extends State<JobDetailPage>
                               if (element.state!.contains('Closed')) {
                                 setState(() {
                                   isExpenseState = false;
+                                  print(getJobState);
+                              print(isExpenseState);
                                 });
-                                return;
+                               // return;
                               }
                             }
                           }
-
-                          OrderWidgateState? _state =
+         OrderWidgateState? _state =
+         
                               await changeDialogStateJob(getJobState,
                                   isDriver:
                                       userModule.currentUser.value.userRole ==
                                           UserWidgetType.driver,
                                   isExpenseApproved: isExpenseState);
+                          
 
+                 
                           if (_state != null) {
                             await _jobModule.updateJobState(
                                 widget.job.id.toString(), _state);
@@ -213,81 +219,82 @@ class JobDetailPageState extends State<JobDetailPage>
                     );
                   }),
 
-          //  if (widget.job.jobStates != OrderWidgateState.Pending)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SingleChildScrollView(
-                 physics:const  NeverScrollableScrollPhysics(),
-                 scrollDirection: Axis.vertical,
-                    child: StreamBuilder<List<ExpenseModel>>(
-                        stream: _expenseModule.fetchByJobExpenses(
-                            widget.job.id!, userModule.currentUser.value),
-                        builder: (context, snapshot) {
-                          List<ExpenseModel> _expenses = snapshot.data ?? [];
-                          expenses = snapshot.data ?? [];
+            //  if (widget.job.jobStates != OrderWidgateState.Pending)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  child: StreamBuilder<List<ExpenseModel>>(
+                      stream: _expenseModule.fetchByJobExpenses(
+                          widget.job.id!, userModule.currentUser.value),
+                      builder: (context, snapshot) {
+                        List<ExpenseModel> _expenses = snapshot.data ?? [];
+                        expenses = snapshot.data ?? [];
 
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: _expenses.length,
-                            itemBuilder: (_, index) {
-                              return GestureDetector(
-                                onDoubleTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (_) => ExpenseDetailsPage(
-                                            _expenses[index]))),
-                                onTap: () {
-                                  AlertDialog alert = AlertDialog(
-                                    title: const Text('Update Expense State'),
-                                    actions: [
-                                      ElevatedButton(
-                                          onPressed: () async {
-                                            OrderWidgateState? _state =
-                                                await changeDialogStateJob(
-                                                    _expenses[index]
-                                                        .expensesState,
-                                                    isSuperUser: userModule
-                                                        .isSuperUser.value,
-                                                    isJob: false);
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _expenses.length,
+                          itemBuilder: (_, index) {
+                            return GestureDetector(
+                              onDoubleTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (_) => ExpenseDetailsPage(
+                                          _expenses[index]))),
+                              onTap: () {
+                                AlertDialog alert = AlertDialog(
+                                  title: const Text('Update Expense State'),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () async {
+                                          OrderWidgateState? _state =
+                                              await changeDialogStateJob(
+                                                  _expenses[index]
+                                                      .expensesState,
+                                                  isSuperUser: userModule
+                                                      .isSuperUser.value,
+                                                  isJob: false);
 
-                                            if (_state != null) {
-                                              // update online
-                                              await _expenseModule
-                                                  .updateExpenseState(
-                                                      _expenses[index].id!,
-                                                      _state);
-                                              // setState
+                                          if (_state != null) {
+                                            // update online
+                                            await _expenseModule
+                                                .updateExpenseState(
+                                                    _expenses[index].id!,
+                                                    _state);
+                                            // setState
 
-                                            }
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text('Update State'))
-                                    ],
+                                          }
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Update State'))
+                                  ],
+                                );
+                                if (_expenses[index].expensesState !=
+                                    OrderWidgateState.Closed) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return alert;
+                                    },
                                   );
-                                  if (_expenses[index].expensesState !=
-                                      OrderWidgateState.Closed) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return alert;
-                                      },
-                                    );
-                                  }
-                                },
-                                child: ExpensesListTile(
-                                  title: _expenses[index].expenseType ?? '',
-                                  truckNumber:
-                    constants.truckNumber(_expenses[index].truckId ?? ''),
-                  driverName: constants.driverName(_expenses[index].userId ?? ''),
-                                  dateTime: _expenses[index].date,
-                                  amount: doubleFormat.format(double.tryParse(
-                                      _expenses[index].totalAmount ?? '0')),
-                                  expenseState: _expenses[index].expensesState,
-                                ),
-                              );
-                            },
-                          );
-                        })),
-              )
+                                }
+                              },
+                              child: ExpensesListTile(
+                                title: _expenses[index].expenseType ?? '',
+                                truckNumber: constants.truckNumber(
+                                    _expenses[index].truckId ?? ''),
+                                driverName: constants
+                                    .driverName(_expenses[index].userId ?? ''),
+                                dateTime: _expenses[index].date,
+                                amount: doubleFormat.format(double.tryParse(
+                                    _expenses[index].totalAmount ?? '0')),
+                                expenseState: _expenses[index].expensesState,
+                              ),
+                            );
+                          },
+                        );
+                      })),
+            )
           ],
         ),
       ),

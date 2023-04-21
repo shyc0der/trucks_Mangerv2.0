@@ -9,6 +9,7 @@ import 'package:trucks_manager/src/modules/job_module.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
 import 'package:trucks_manager/src/ui/pages/jobs/jobs_details_page.dart';
 import 'package:trucks_manager/src/ui/widgets/constants.dart';
+import 'package:trucks_manager/src/ui/widgets/dismiss_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/job_list_tile_widget.dart';
 import 'package:trucks_manager/src/ui/widgets/order_details_widget.dart';
 
@@ -27,6 +28,27 @@ class _JobsPageState extends State<JobsPage> {
   final OrderModules orderModules = Get.put<OrderModules>(OrderModules());
   final UserModule userModule = Get.put(UserModule());
   NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
+    
+    Future<bool> _dismissDialog(JobModel jobModel)async{
+     JobModule _jobModule=JobModule();
+
+    bool? _delete = await dismissWidget('Job with Order NO.${jobModel.orderNo}');
+
+    if(_delete == true){
+      // delete from server      
+      
+     await _jobModule.deleteJob(jobModel.id!, jobModel.orderId ?? 'null');
+
+     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Job Deleted!"),
+      ));
+    }
+
+
+    return _delete == true;
+
+  }
+
 
   String? fetchOrder(String? orderId) {
     var res = orderModules.getOrderByJobId(orderId!);
@@ -112,6 +134,11 @@ class _JobsPageState extends State<JobsPage> {
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) => JobDetailPage(displayJobs[index])));
+                      },
+                      onDoubleTap: () async {
+                       
+                           await  _dismissDialog(snapshot.data![index]);
+                        
                       },
                     );
                   },

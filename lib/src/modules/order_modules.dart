@@ -27,11 +27,12 @@ class OrderModules extends GetxController {
       return _orders;
     });
   }
-  
+
   void init(UserModel user) {
-    // fetch jobs, drivers & truck  
-     fetchOrders(user);
+    // fetch jobs, drivers & truck
+    fetchOrders(user);
   }
+
   //fetch orders
   Stream<List<OrderModel>> fetchOrders(UserModel user) {
     if (user.userRole == UserWidgetType.admin ||
@@ -71,18 +72,19 @@ class OrderModules extends GetxController {
 
   //FETCH ORDER BY STATE
   Stream<List<OrderModel>> fetchOrderByState(String state, UserModel user) {
-   if (user.userRole == UserWidgetType.admin ||
+    if (user.userRole == UserWidgetType.admin ||
         user.userRole == UserWidgetType.manager) {
       return _orderModel
           .fetchStreamsData(orderBy: 'dateCreated')
           .map<List<OrderModel>>((snapshot) {
-        return snapshot.docs.map<OrderModel>((doc) =>
-          OrderModel.from({'id': doc.id,... doc.data() as Map, })).
-          where((element) => element.state == state)
-        .toList();
-        });
-
-       
+        return snapshot.docs
+            .map<OrderModel>((doc) => OrderModel.from({
+                  'id': doc.id,
+                  ...doc.data() as Map,
+                }))
+            .where((element) => element.state == state)
+            .toList();
+      });
     } else {
       return _orderModel
           .fetchStreamsDataWhere('userId',
@@ -90,11 +92,9 @@ class OrderModules extends GetxController {
           .map<List<OrderModel>>((snapshot) {
         return snapshot.docs
             .map<OrderModel>(
-                (e) => OrderModel.from({'id': e.id, ...e.data() as Map})).
-                where((element) => element.state == state)
+                (e) => OrderModel.from({'id': e.id, ...e.data() as Map}))
+            .where((element) => element.state == state)
             .toList();
-
-        
       });
     }
   }
@@ -135,6 +135,18 @@ class OrderModules extends GetxController {
   Future<OrderModel> getOrderById(String _orderId) async {
     final _orderMap = await _orderModel.fetchDataById(_orderId);
     return OrderModel.from({'id': _orderMap.id, ...(_orderMap.data() ?? {})});
+  }
+
+  //fetch jobs by user
+  Future<List<OrderModel>?> fetchOrdersByUser(UserModel userModel) async {
+    var _res = await _orderModel.fetchWhereData('userId',
+        isEqualTo: userModel.id, orderBy: 'dateCreated');
+    var ret = _res.map((documentSnapshot) {
+      return OrderModel.from(
+          {'id': documentSnapshot.id, ...documentSnapshot.data()});
+    }).toList();
+    
+    return ret;
   }
 
 //get order by jobid
