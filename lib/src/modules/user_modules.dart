@@ -56,36 +56,36 @@ class UserModule extends GetxController {
       return userModel
           .fetchStreamsDataWhere('role', isEqualTo: 'customer')
           .map<List<UserModel>>((streams) {
-        var _users= streams.docs
+        var _users = streams.docs
             .map<UserModel>((doc) =>
                 UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
             .toList();
-      users.clear();
-      users.addAll(_users);
-      return _users;
+        users.clear();
+        users.addAll(_users);
+        return _users;
       });
     }
     if (isDriver == true) {
       return userModel
           .fetchStreamsDataWhere('role', isEqualTo: 'driver')
           .map<List<UserModel>>((streams) {
-        var _users= streams.docs
+        var _users = streams.docs
             .map<UserModel>((doc) =>
                 UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
             .toList();
-            users.clear();
-      users.addAll(_users);
-      return _users;
+        users.clear();
+        users.addAll(_users);
+        return _users;
       });
     }
     return userModel
         .fetchStreamsDataWhere('role', isNotEqualTo: 'customer')
         .map<List<UserModel>>((streams) {
-      var _users= streams.docs
+      var _users = streams.docs
           .map<UserModel>(
               (doc) => UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
           .toList();
-           users.clear();
+      users.clear();
       users.addAll(_users);
       return _users;
     });
@@ -95,11 +95,11 @@ class UserModule extends GetxController {
     return userModel
         .fetchStreamsDataWhere('role', isEqualTo: 'driver')
         .map<List<UserModel>>((streams) {
-      var _users= streams.docs
+      var _users = streams.docs
           .map<UserModel>(
               (doc) => UserModel.fromMap({'id': doc.id, ...doc.data() as Map}))
           .toList();
-           users.clear();
+      users.clear();
       users.addAll(_users);
       return _users;
     });
@@ -128,9 +128,12 @@ class UserModule extends GetxController {
     final _users = await userModel.fetchWhereData("role", isEqualTo: 'driver');
 
     for (var user in _users) {
-      _map.addAll({user.id: user.data()});
+      if (user.id != "c9AP9R06ugY54uHMmhscoTarpix2") {
+        _map.addAll({user.id: user.data()});
+      }
     }
 
+    // Map<String, dynamic> _test = await _map.remove((key, value) => key == 'c9AP9R06ugY54uHMmhscoTarpix2');
     return _map;
   }
 

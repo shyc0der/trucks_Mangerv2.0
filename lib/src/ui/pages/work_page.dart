@@ -103,7 +103,6 @@ class _WorkPageState extends State<WorkPage> {
                     .fetchAllExpenses(_userModule.currentUser.value),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    print(snapshot.error);
                     return Text('Error = ${snapshot.error}');
                   }
                   if (snapshot.hasData) {

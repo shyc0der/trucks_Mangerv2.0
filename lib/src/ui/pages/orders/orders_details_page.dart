@@ -1,5 +1,6 @@
 // ignore_for_file: unused_field, use_build_context_synchronously, no_leading_underscores_for_local_identifiers, avoid_print
 
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -30,7 +31,7 @@ class OrderDetailPageState extends State<OrderDetailPage> {
   final UserModule _userModule = Get.put(UserModule());
   final JobModule _jobModule = JobModule();
   String _orderState = '';
-    NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
+  NumberFormat doubleFormat = NumberFormat.decimalPattern('en_us');
   OrderWidgateState orderState = OrderWidgateState.Pending;
   @override
   void initState() {
@@ -38,8 +39,6 @@ class OrderDetailPageState extends State<OrderDetailPage> {
 
     orderState = widget.order.orderStates;
     _orderState = orderState.value;
-
-
   }
 
   @override
@@ -55,7 +54,8 @@ class OrderDetailPageState extends State<OrderDetailPage> {
             // order detail
             OrderDetailWidget(
               title: widget.order.title ?? '',
-              amount: 'Ksh. ${doubleFormat.format((widget.order.amount ?? 0).ceilToDouble())}',
+              amount:
+                  'Ksh. ${doubleFormat.format((widget.order.amount ?? 0).ceilToDouble())}',
               date: widget.order.dateCreated.toString().substring(0, 16),
               orderState: orderState,
               update: () async {
@@ -74,6 +74,8 @@ class OrderDetailPageState extends State<OrderDetailPage> {
                     _res = await Get.dialog(
                         const Dialog(child: DriverVehicleGetDetails()));
                     if (_res != null && _res.isNotEmpty) {
+                      print(_res[1],);
+                      print(_res[0]);
                       final job = JobModel(
                           createdBy: _userModule.currentUser.value.id,
                           customerId: widget.order.customerId,
@@ -120,9 +122,7 @@ class OrderDetailPageState extends State<OrderDetailPage> {
                       MaterialPageRoute(
                           builder: (context) => JobDetailPage(job)));
                 } else {
-                  Get.dialog(const Dialog(
-
-                  ));
+                  Get.dialog(const Dialog());
                 }
               },
             ),

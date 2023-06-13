@@ -20,6 +20,7 @@ class TruckModules extends GetxController {
         .docs
         .map<Future<TrucksModel>>((doc) async {
       var t = TrucksModel.fromMap({'id': doc.id, ...doc.data() as Map});
+
       t.reportTotal = await t.getTotals(DateTimeRange(
           start: DateTime.now().subtract(const Duration(days: 30)),
           end: DateTime.now()));
@@ -27,12 +28,14 @@ class TruckModules extends GetxController {
     }).toList();
 
     List<TrucksModel> _trucks = [];
+
     for (var f in trucks2) {
+     
       _trucks.add(await f);
     }
-
+ List<TrucksModel> removeDefaultTruck =  _trucks.where((element) => element.vehicleRegNo != "DEFAULT VEHICLE").toList();
     trucks.clear();
-    trucks.addAll(_trucks);
+    trucks.addAll(removeDefaultTruck);
     return trucks;
   }
 
@@ -61,7 +64,10 @@ class TruckModules extends GetxController {
     final Map<String, String> _map = {}; // {'id': 'registration'}
     final _trucks = await _trucksModel.fetchData();
     for (var truck in _trucks) {
-      _map.addAll({truck.id: truck.data()['vehicleRegNo']});
+      if (truck.id != "EVwLiKI3Bazd6vLakBWt") {
+          _map.addAll({truck.id: truck.data()['vehicleRegNo']});
+      }
+   
     }
 
     return _map;

@@ -196,6 +196,16 @@ class ExpenseModule extends GetXState {
 
     return expenses;
   }
+  ///fetch expense by expenseType
+ Future<List<ExpenseModel>> fetchAllExpensesByExpenseTypes(String expenseType) async {
+    var expenses = (await _expensesModel.fetchWhereData('expenseType',
+            isEqualTo: expenseType, orderBy: 'date'))
+        .map<ExpenseModel>((snapshot) {
+      return ExpenseModel.fromMap({'id': snapshot.id, ...snapshot.data()});
+    }).toList();
+
+    return expenses;
+  }
 
 //fetch expense by Order
   Future<List<ExpenseModel>> fetchByExenpseByOrder(String orderId) async {

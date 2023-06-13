@@ -47,7 +47,7 @@ class _OrdersPageState extends State<OrdersPage> {
        await orderModel.deleteOnline(orderModel.id ?? 'null');
      }
 
-     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+     ScaffoldMessenger.of(context).showSnackBar( SnackBar(
         content: Text("Order Deleted!"),
       ));
     }

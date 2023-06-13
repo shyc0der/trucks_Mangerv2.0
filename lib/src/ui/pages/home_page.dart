@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:trucks_manager/src/modules/order_modules.dart';
 import 'package:trucks_manager/src/modules/user_modules.dart';
 import 'package:trucks_manager/src/ui/login_page.dart';
@@ -33,6 +36,8 @@ class _HomePageState extends State<HomePage>
   late final TabController _tabController;
   final UserModule _userModule = Get.put(UserModule());
   final OrderModules _orderModules = Get.put(OrderModules());
+
+
   @override
   void initState() {
     super.initState();
@@ -41,7 +46,17 @@ class _HomePageState extends State<HomePage>
       setState(() {});
     });
     _orderModules.init(_userModule.currentUser.value);
+   // initPlatformState();
   }
+
+  // Future<void> initPlatformState() async {
+  //   _setPath();
+  //   if (!mounted) return;
+  // }
+
+  // void _setPath() async {
+  //   path = (await getExternalStorageDirectory())!.path;
+  // }
 
   @override
   void dispose() {
@@ -52,7 +67,6 @@ class _HomePageState extends State<HomePage>
   bool isCollapsed = true;
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       drawer: Drawer(
         child: Column(
@@ -139,12 +153,12 @@ class _HomePageState extends State<HomePage>
                   tileColor: Colors.greenAccent.withOpacity(.4),
                   onTap: () async {
                     // logout
-                   await FirebaseUserModule.logout();
-                   await Future.delayed(const Duration(seconds: 1));
-                 await  _userModule.setCurrentUser('');
+                    await FirebaseUserModule.logout();
+                    await Future.delayed(const Duration(seconds: 1));
+                    await _userModule.setCurrentUser('');
                     // navigate to login
                     await Future.delayed(const Duration(seconds: 3));
-                  
+
                     Get.offAll(const LoginPage());
                     // ignore: use_build_context_synchronously
 
@@ -156,9 +170,10 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
             ),
-          
-        const  SizedBox(height: 2,),
-      
+
+            const SizedBox(
+              height: 2,
+            ),
           ],
         ),
       ), //reports pages
@@ -166,10 +181,22 @@ class _HomePageState extends State<HomePage>
       appBar: AppBar(
         centerTitle: true,
         actions: <Widget>[
-          IconButton(onPressed: (){}, 
-          icon: const Icon(Icons.update_outlined)),
-                  
-   
+          IconButton(
+              onPressed: () async {
+                // options = DownloaderUtils(
+                //   progress: ProgressImplementation(),
+                //   file: File('$path/trucksApp.apk'),
+                //   onDone: () => print('COMPLETE'),
+                //   progressCallback: ((count, total) {
+                //     final progress = (count / total) * 100;
+                //     print('DownLoading: $progress');
+                //   }),
+                //   deleteOnCancel: true,
+                // );
+                // core = await Flowder.download('https://drive.google.com/file/d/1fDWE2SBKfJiJl9WusApTuMZlV5qOcJZl/view?usp=share_link', options);
+              },
+              
+              icon: const Icon(Icons.update_outlined)),
         ],
         title: Text(_userModule.currentUser.value.role == 'driver'
             ? '${_userModule.currentUser.value.firstName} ${_userModule.currentUser.value.lastName}'
